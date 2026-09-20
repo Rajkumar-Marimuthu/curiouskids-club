@@ -45,13 +45,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
-        with:
-          build-root-directory: apps/api
       - name: Format check
         run: make format-check-api
       - name: Test (Testcontainers needs Docker, available by default on this runner)
@@ -65,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: apps/web/.nvmrc
           cache: npm
