@@ -4,3 +4,16 @@
 # Gradle
 **/.gradle/
 **/build/
+
+# Node (root tooling, e.g. lefthook)
+node_modules/
+
+# Environment files (local defaults live in infra/local instead)
+.env
+.env.*.local
+
+# Logs
+*.log
+
+# OS
+.DS_Store
