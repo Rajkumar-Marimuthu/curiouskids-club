@@ -17,7 +17,7 @@ If the spec and the request conflict, or the spec is silent on something that ch
 
 ## Stack (see docs/adr/0003-tech-stack.md)
 
-- Backend: Java 25 (LTS), Spring Boot 4.1.x, Maven wrapper, Spring Modulith, Spring Data JPA, Flyway, PostgreSQL.
+- Backend: Java 25 (LTS), Spring Boot 4.1.x, Gradle wrapper (ADR-0008), Spring Modulith, Spring Data JPA, Flyway, PostgreSQL.
 - Frontend: React 19, TypeScript (strict), Vite, Node 24 LTS, TanStack Query, React Router.
 - Tests: JUnit 5, AssertJ, Testcontainers (real PostgreSQL), Vitest, React Testing Library, MSW, Playwright.
 - Infra: Docker, Terraform, AWS (ECS Fargate, RDS, S3, CloudFront, SES), GitHub Actions.
@@ -34,8 +34,6 @@ make web-test  # frontend tests only
 make e2e       # Playwright against the full local stack
 make format    # apply formatters
 ```
-
-Until T-002 is done these targets do not exist; use `./mvnw verify` in `apps/api` and `npm run build && npm test` in `apps/web`.
 
 ## Architecture rules (non-negotiable)
 

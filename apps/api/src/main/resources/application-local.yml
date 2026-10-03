@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB:club}
+    username: ${POSTGRES_USER:club}
+    password: ${POSTGRES_PASSWORD:club}
+  mail:
+    host: localhost
+    port: ${MAILPIT_SMTP_PORT:1025}

@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+*.jar binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.svg binary
+
+/apps/api/gradlew text eol=lf
+/apps/api/gradlew.bat text eol=crlf
+
+/apps/web/src/api/** linguist-generated

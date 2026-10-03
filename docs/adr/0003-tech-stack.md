@@ -4,6 +4,8 @@
 **Date:** 2026-09-19
 **Deciders:** Rajkumar (owner)
 
+> Note: the build-tool choice below (Maven) is superseded by [ADR-0008](0008-build-tool-gradle.md); the backend uses Gradle. The rest of this ADR stands.
+
 ## Context
 
 The owner is a senior engineer and chose React for the front end and Spring Boot (Java) for the back end. The stack must be mainstream, well supported for at least 3 years, friendly to AI coding agents (strong typing, conventions, large training corpus), and easy to hire for.

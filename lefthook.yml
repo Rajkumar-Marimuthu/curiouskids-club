@@ -1,0 +1,14 @@
+pre-commit:
+  parallel: true
+  commands:
+    backend-format:
+      glob: "apps/api/**/*.java"
+      run: ./apps/api/gradlew -p apps/api spotlessCheck
+    web-format:
+      glob: "apps/web/**/*.{ts,tsx,js,jsx,css,json,md}"
+      run: npm --prefix apps/web run format:check
+    web-lint:
+      glob: "apps/web/**/*.{ts,tsx,js,jsx}"
+      run: npm --prefix apps/web run lint
+    gitleaks:
+      run: gitleaks protect --staged --redact --no-banner
