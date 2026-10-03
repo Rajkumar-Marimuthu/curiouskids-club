@@ -1,0 +1,33 @@
+# Contract-first API definition (ADR-0005, docs/architecture/api-conventions.md).
+# Edit this file first, then the code. ContractTest fails if the running API differs.
+openapi: 3.1.0
+info:
+  title: Curiouskids Club API
+  version: 1.0.0
+  description: Lending library API. Errors are RFC 9457 problem+json.
+paths:
+  /api/v1/ping:
+    get:
+      tags:
+        - ping
+      operationId: ping
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PingResponse"
+components:
+  schemas:
+    PingResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        time:
+          type: string
+          format: date-time
+      required:
+        - status
+        - time
