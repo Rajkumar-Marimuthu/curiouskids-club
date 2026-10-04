@@ -1,14 +1,12 @@
 package com.curiouskids.club.shared.internal.web;
 
 import com.curiouskids.club.shared.ApiException;
-import com.curiouskids.club.shared.ClubProperties;
 import com.curiouskids.club.shared.ErrorCode;
-import java.net.URI;
-import java.util.Locale;
+import com.curiouskids.club.shared.Problems;
+import com.curiouskids.club.shared.RateLimitedException;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -30,10 +28,10 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-  private final ClubProperties properties;
+  private final Problems problems;
 
-  GlobalExceptionHandler(ClubProperties properties) {
-    this.properties = properties;
+  GlobalExceptionHandler(Problems problems) {
+    this.problems = problems;
   }
 
   @ExceptionHandler(ApiException.class)
@@ -46,7 +44,11 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
               .map(e -> Map.of("field", e.field(), "message", e.message()))
               .toList());
     }
-    return toResponse(body, ex.code(), new HttpHeaders());
+    HttpHeaders headers = new HttpHeaders();
+    if (ex instanceof RateLimitedException limited) {
+      headers.set(HttpHeaders.RETRY_AFTER, Long.toString(limited.retryAfter().toSeconds()));
+    }
+    return toResponse(body, ex.code(), headers);
   }
 
   @ExceptionHandler(Exception.class)
@@ -101,17 +103,8 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   private ResponseEntity<Object> toResponse(
       ProblemDetail body, ErrorCode code, HttpHeaders headers) {
-    body.setType(typeFor(code));
-    body.setTitle(code.title());
-    body.setProperty("code", code.name());
-    body.setProperty("traceId", MDC.get(TraceIdFilter.MDC_KEY));
+    problems.decorate(body, code);
     return ResponseEntity.status(body.getStatus()).headers(headers).body(body);
-  }
-
-  private URI typeFor(ErrorCode code) {
-    return properties
-        .problemTypeBase()
-        .resolve(code.name().toLowerCase(Locale.ROOT).replace('_', '-'));
   }
 
   private static Map<String, String> fieldError(String field, MessageSourceResolvable error) {

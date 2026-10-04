@@ -1,8 +1,10 @@
 package com.curiouskids.club.shared.internal.web;
 
+import static com.curiouskids.club.support.Csrf.csrf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.curiouskids.club.support.IntegrationTest;
 import com.curiouskids.testsupport.ProbeController;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
@@ -22,6 +25,28 @@ import org.springframework.http.MediaType;
 class ErrorHandlingTest extends IntegrationTest {
 
   private static final String TRACE_ID = "test-trace-0001";
+
+  /** Error handling is the same for everyone; these checks run as a logged-in member. */
+  @BeforeEach
+  void asLoggedInMember() {
+    mvc =
+        mockMvc()
+            .defaultRequest(get("/").with(user("member").roles("MEMBER")).with(csrf()))
+            .build();
+  }
+
+  @Test
+  @DisplayName("NFR-09: anonymous access to a protected or unknown route returns 401 problem+json")
+  void anonymousGetsUnauthenticated() throws Exception {
+    mockMvc()
+        .build()
+        .perform(get("/api/v1/no-such-thing").header(TraceIdFilter.HEADER, TRACE_ID))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.code").value("UNAUTHENTICATED"))
+        .andExpect(jsonPath("$.type").value("https://curiouskids.example/problems/unauthenticated"))
+        .andExpect(jsonPath("$.traceId").value(TRACE_ID));
+  }
 
   @Test
   @DisplayName("NFR-09: unknown route returns 404 problem+json with code and traceId")

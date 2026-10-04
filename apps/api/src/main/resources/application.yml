@@ -10,9 +10,17 @@ spring:
   mvc:
     problemdetails:
       enabled: false # GlobalExceptionHandler renders problem+json itself
+  session:
+    jdbc:
+      initialize-schema: never # tables come from Flyway (V4)
   mail: # SMTP transport; local and test use Mailpit, AWS uses SES (club.notification.transport)
     host: localhost
     port: 1025
+
+server:
+  servlet:
+    session:
+      timeout: 30m # default; login sets 14 days for members, 30 minutes for staff. Cookie: SessionCookieConfig
 
 club:
   timezone: Europe/London

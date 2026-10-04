@@ -66,6 +66,70 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /api/v1/auth/login:
+    post:
+      tags:
+        - auth
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Logged in; the session cookie is set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeResponse'
+        '401':
+          description: 'UNAUTHENTICATED: email or password is incorrect'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: 'RATE_LIMITED: too many failed attempts; see Retry-After'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/auth/logout:
+    post:
+      tags:
+        - auth
+      operationId: logout
+      responses:
+        '204':
+          description: Logged out; the session no longer works
+  /api/v1/auth/me:
+    get:
+      tags:
+        - auth
+      operationId: me
+      responses:
+        '200':
+          description: The logged-in account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeResponse'
+        '401':
+          description: 'UNAUTHENTICATED: not logged in'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/auth/csrf:
+    get:
+      tags:
+        - auth
+      operationId: csrf
+      responses:
+        '204':
+          description: The XSRF-TOKEN cookie is set
   /api/v1/ping:
     get:
       tags:
@@ -189,6 +253,42 @@ components:
           minLength: 1
       required:
         - email
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 254
+          minLength: 1
+        password:
+          type: string
+          maxLength: 128
+          minLength: 1
+      required:
+        - email
+        - password
+    MeResponse:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+            - MEMBER
+            - VOLUNTEER
+            - ADMIN
+        familyId:
+          type: string
+          format: uuid
+          description: Absent for staff
+        emailVerified:
+          type: boolean
+      required:
+        - accountId
+        - emailVerified
+        - role
     PingResponse:
       type: object
       properties:

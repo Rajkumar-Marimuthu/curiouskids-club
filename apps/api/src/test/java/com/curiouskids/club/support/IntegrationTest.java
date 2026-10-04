@@ -1,6 +1,7 @@
 package com.curiouskids.club.support;
 
 import com.curiouskids.club.shared.internal.web.TraceIdFilter;
+import jakarta.servlet.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.GenericContainer;
@@ -20,7 +22,7 @@ import org.testcontainers.utility.DockerImageName;
  * container pattern). Scheduled jobs are off; tests run them directly.
  */
 @SpringBootTest(properties = {"springdoc.api-docs.enabled=true", "club.jobs.enabled=false"})
-@Import(TestEmailConfig.class)
+@Import({TestEmailConfig.class, TestAccounts.class})
 public abstract class IntegrationTest {
 
   static final PostgreSQLContainer POSTGRES =
@@ -55,9 +57,15 @@ public abstract class IntegrationTest {
 
   @BeforeEach
   void setUpMockMvc() {
-    mvc =
-        MockMvcBuilders.webAppContextSetup(context)
-            .addFilters(context.getBean(TraceIdFilter.class))
-            .build();
+    mvc = mockMvc().build();
+  }
+
+  /** MockMvc with the real filter order: trace ID, Spring Session (JDBC), then Spring Security. */
+  protected DefaultMockMvcBuilder mockMvc() {
+    return MockMvcBuilders.webAppContextSetup(context)
+        .addFilters(
+            context.getBean(TraceIdFilter.class),
+            context.getBean("springSessionRepositoryFilter", Filter.class),
+            context.getBean("springSecurityFilterChain", Filter.class));
   }
 }

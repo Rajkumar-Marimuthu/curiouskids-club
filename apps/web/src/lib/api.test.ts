@@ -52,3 +52,32 @@ describe('global error toast', () => {
     expect(currentToasts()).toHaveLength(1)
   })
 })
+
+describe('CSRF token (ADR-0004)', () => {
+  it('fetches the token cookie once and echoes it on state-changing calls only', async () => {
+    let csrfCalls = 0
+    const headers: (string | null)[] = []
+    server.use(
+      http.get('*/api/v1/auth/csrf', () => {
+        csrfCalls++
+        document.cookie = 'XSRF-TOKEN=abc%3D; path=/'
+        return new HttpResponse(null, { status: 204 })
+      }),
+      http.get('*/api/v1/ping', ({ request }) => {
+        headers.push(request.headers.get('X-XSRF-TOKEN'))
+        return HttpResponse.json({ status: 'ok', time: '2026-09-21T16:00:00Z' })
+      }),
+      http.post('*/api/v1/auth/logout', ({ request }) => {
+        headers.push(request.headers.get('X-XSRF-TOKEN'))
+        return new HttpResponse(null, { status: 204 })
+      }),
+    )
+
+    await unwrap(apiClient.GET('/api/v1/ping'))
+    await unwrap(apiClient.POST('/api/v1/auth/logout'))
+    await unwrap(apiClient.POST('/api/v1/auth/logout'))
+
+    expect(headers).toEqual([null, 'abc=', 'abc='])
+    expect(csrfCalls).toBe(1)
+  })
+})
