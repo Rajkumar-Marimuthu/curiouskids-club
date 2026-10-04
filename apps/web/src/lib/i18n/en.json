@@ -1,0 +1,75 @@
+{
+  "app": {
+    "name": "Curiouskids Club",
+    "tagline": "Our neighbourhood lending library for curious kids",
+    "skipToContent": "Skip to main content",
+    "loading": "Loading…"
+  },
+  "nav": {
+    "label": "Main",
+    "home": "Home",
+    "books": "Books",
+    "myReservations": "My reservations",
+    "myLoans": "My loans",
+    "account": "Account",
+    "login": "Log in",
+    "register": "Join the club",
+    "pickList": "Pick list",
+    "scan": "Scan",
+    "overdue": "Overdue",
+    "titles": "Titles",
+    "windows": "Windows",
+    "closures": "Closures",
+    "settings": "Settings",
+    "users": "Users",
+    "audit": "Audit log"
+  },
+  "areas": {
+    "staff": "Volunteer desk",
+    "admin": "Administration"
+  },
+  "home": {
+    "title": "Welcome to Curiouskids Club",
+    "intro": "Browse the shelves, reserve a book and pick it up at a time that suits you.",
+    "apiStatus": "API status",
+    "apiChecking": "Checking…",
+    "apiOk": "OK",
+    "apiDown": "Unavailable",
+    "serverTime": "Server time: {{time}}"
+  },
+  "pages": {
+    "comingSoon": "This page is coming soon.",
+    "books": "Books",
+    "bookDetail": "Book details",
+    "register": "Join the club",
+    "login": "Log in",
+    "verifyEmail": "Verify your email",
+    "resetPassword": "Reset your password",
+    "account": "Your account",
+    "children": "Your children",
+    "myReservations": "My reservations",
+    "myLoans": "My loans",
+    "pickList": "Pick list",
+    "scan": "Scan books",
+    "overdue": "Overdue loans",
+    "staffTitles": "Titles and copies",
+    "windows": "Handover windows",
+    "closures": "Closures",
+    "settings": "Settings",
+    "users": "Users",
+    "audit": "Audit log",
+    "notFound": "Page not found",
+    "notFoundBody": "We couldn't find that page. It may have moved."
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "body": "Sorry, this part of the page could not be shown. Please try again.",
+    "retry": "Try again",
+    "backHome": "Back to home",
+    "unexpected": "Something went wrong. Please try again in a moment.",
+    "reference": "Reference: {{traceId}}"
+  },
+  "toast": {
+    "close": "Dismiss"
+  }
+}

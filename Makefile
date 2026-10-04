@@ -31,6 +31,7 @@ api-test:
 web-test:
 	$(NPM) run lint
 	$(NPM) run typecheck
+	$(NPM) run test
 
 api-build:
 	$(GRADLE) build -x test
@@ -38,8 +39,10 @@ api-build:
 web-build:
 	$(NPM) run build
 
+# Playwright against the full local stack: run `make dev` first (it serves the API on :8080).
+# The web dev server is started if it is not already running.
 e2e:
-	@echo "make e2e: not implemented until T-004 (Playwright setup)"
+	$(NPM) run e2e
 
 format:
 	$(GRADLE) spotlessApply
