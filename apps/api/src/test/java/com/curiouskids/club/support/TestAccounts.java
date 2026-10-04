@@ -1,11 +1,18 @@
 package com.curiouskids.club.support;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+
+import com.curiouskids.club.identity.CurrentUser;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 /** Creates accounts straight in the database for tests that need someone to log in as. */
 @Component
@@ -22,7 +29,16 @@ public class TestAccounts {
   }
 
   /** A created account and its login email. */
-  public record Account(UUID id, String email, UUID familyId) {}
+  public record Account(UUID id, String email, UUID familyId, String role) {
+
+    /** Sends the request as this account, with the principal a real login would create. */
+    public RequestPostProcessor session() {
+      CurrentUser user = new CurrentUser(id, role, familyId);
+      return authentication(
+          UsernamePasswordAuthenticationToken.authenticated(
+              user, null, List.of(new SimpleGrantedAuthority("ROLE_" + role))));
+    }
+  }
 
   public Account member(boolean verified) {
     UUID familyId = UUID.randomUUID();
@@ -71,6 +87,6 @@ public class TestAccounts {
         .param("consentAt", familyId == null ? null : now)
         .param("now", now)
         .update();
-    return new Account(id, email, familyId);
+    return new Account(id, email, familyId, role);
   }
 }

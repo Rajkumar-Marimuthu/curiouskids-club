@@ -4,6 +4,9 @@ spring:
   autoconfigure:
     exclude: # no generated in-memory user; accounts log in only through LoginService (ADR-0004)
       - org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true # unknown request fields are rejected (api-conventions.md, BR-30)
   jpa:
     open-in-view: false
     hibernate:

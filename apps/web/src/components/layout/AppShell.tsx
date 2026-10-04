@@ -9,6 +9,8 @@ import { Toaster } from '../ui/toaster'
 export type NavItem = {
   to: string
   label: string
+  /** Highlight only on this exact path, not on pages below it. */
+  end?: boolean
 }
 
 type AppShellProps = {
@@ -48,7 +50,7 @@ export function AppShell({ nav, area, guard = (page) => page, children }: AppShe
                 <li key={item.to}>
                   <NavLink
                     to={item.to}
-                    end={item.to === '/'}
+                    end={item.end ?? item.to === '/'}
                     className={({ isActive }) =>
                       cn(
                         'inline-flex min-h-11 items-center rounded-full px-3 font-semibold text-ink-muted hover:bg-brand-soft',

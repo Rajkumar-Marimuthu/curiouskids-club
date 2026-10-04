@@ -48,7 +48,8 @@ export function MemberLayout() {
         { to: '/books', label: t('nav.books') },
         { to: '/my/reservations', label: t('nav.myReservations') },
         { to: '/my/loans', label: t('nav.myLoans') },
-        { to: '/account', label: t('nav.account') },
+        { to: '/account/children', label: t('nav.children') },
+        { to: '/account', label: t('nav.account'), end: true },
       ]}
       guard={(page) => <RequireRole>{page}</RequireRole>}
     />

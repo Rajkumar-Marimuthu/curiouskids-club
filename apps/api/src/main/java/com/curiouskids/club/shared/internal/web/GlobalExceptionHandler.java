@@ -4,6 +4,7 @@ import com.curiouskids.club.shared.ApiException;
 import com.curiouskids.club.shared.ErrorCode;
 import com.curiouskids.club.shared.Problems;
 import com.curiouskids.club.shared.RateLimitedException;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +13,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import tools.jackson.databind.exc.UnrecognizedPropertyException;
 
 /**
  * Turns every error into RFC 9457 problem+json with a stable {@code code} and the request's {@code
@@ -73,6 +76,26 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .map(e -> fieldError(e.getField(), e))
             .toList());
     return toResponse(body, ErrorCode.VALIDATION_FAILED, headers);
+  }
+
+  /** An unknown field gets a field error naming it, so callers see what was refused. */
+  @Override
+  protected ResponseEntity<Object> handleHttpMessageNotReadable(
+      HttpMessageNotReadableException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
+    if (ex.getCause() instanceof UnrecognizedPropertyException unknown) {
+      ProblemDetail body =
+          ProblemDetail.forStatusAndDetail(
+              ErrorCode.VALIDATION_FAILED.status(),
+              "The request has a field that is not accepted.");
+      body.setProperty(
+          "errors",
+          List.of(Map.of("field", unknown.getPropertyName(), "message", "is not accepted")));
+      return toResponse(body, ErrorCode.VALIDATION_FAILED, headers);
+    }
+    return super.handleHttpMessageNotReadable(ex, headers, status, request);
   }
 
   @Override
