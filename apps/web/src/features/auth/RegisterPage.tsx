@@ -5,7 +5,7 @@ import type { components } from '../../api/schema'
 import { Button } from '../../components/ui/button'
 import { CheckboxField, TextField } from '../../components/ui/field'
 import { apiClient, unwrap } from '../../lib/api'
-import { fieldErrorsOf, type FieldErrors } from '../../lib/forms'
+import { fieldErrorsOf, rateLimitMinutes, type FieldErrors } from '../../lib/forms'
 import { useDocumentTitle } from '../../lib/useDocumentTitle'
 
 type RegisterRequest = components['schemas']['RegisterRequest']
@@ -66,6 +66,7 @@ export function Component() {
   }
 
   const hasErrors = Object.values(errors).some(Boolean)
+  const minutes = rateLimitMinutes(register.error)
 
   return (
     <section className="mx-auto max-w-lg space-y-6">
@@ -73,6 +74,11 @@ export function Component() {
         <h1 className="text-3xl font-bold">{t('pages.register')}</h1>
         <p className="mt-2 text-ink-muted">{t('register.intro')}</p>
       </div>
+      {minutes && (
+        <p role="alert" className="rounded-card bg-danger-soft p-4">
+          {t('errors.rateLimited', { minutes })}
+        </p>
+      )}
       {hasErrors && (
         <p role="alert" className="rounded-card bg-danger-soft p-4">
           {t('register.fixErrors')}

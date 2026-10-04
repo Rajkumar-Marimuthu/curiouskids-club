@@ -12,5 +12,9 @@ springdoc:
     enabled: true
 
 club:
+  identity:
+    request-limits: # every local request (and make e2e) comes from one address
+      register-per-address: 1000
+      email-links-per-address: 1000
   notification:
     poll-interval: PT5S # send queued emails to Mailpit quickly while developing

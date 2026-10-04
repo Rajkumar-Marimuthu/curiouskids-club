@@ -1,31 +1,7 @@
-import { expect, test, type APIRequestContext } from '@playwright/test'
+import { expect, test } from '@playwright/test'
+import { emailTo } from './mailpit.ts'
 
 // FR-ID-01, FR-ID-02 end to end: web, API, database, outbox job and Mailpit (testing-strategy.md).
-const MAILPIT = process.env.MAILPIT_URL ?? 'http://localhost:8025'
-
-type MailpitList = { messages: { ID: string; To: { Address: string }[] }[] }
-
-/** Waits for the outbox job to deliver an email to this address, then returns its text body. */
-async function emailTo(request: APIRequestContext, address: string): Promise<string> {
-  let id: string | undefined
-  await expect
-    .poll(
-      async () => {
-        const list = (await (
-          await request.get(`${MAILPIT}/api/v1/messages?limit=200`)
-        ).json()) as MailpitList
-        id = list.messages.find((m) => m.To.some((to) => to.Address === address))?.ID
-        return id
-      },
-      { timeout: 60_000, intervals: [1_000] },
-    )
-    .toBeTruthy()
-  const message = (await (await request.get(`${MAILPIT}/api/v1/message/${id}`)).json()) as {
-    Text: string
-  }
-  return message.Text
-}
-
 test('a parent registers, gets the email and confirms their address', async ({ page, request }) => {
   const email = `e2e-${Date.now()}@example.com`
 

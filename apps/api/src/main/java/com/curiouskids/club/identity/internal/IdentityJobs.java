@@ -5,20 +5,28 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/** Daily clean-up of failed-login records (kept one day). */
+/** Daily clean-up of failed-login and request-limit records (kept one day). */
 @Component
 @ConditionalOnProperty(name = "club.jobs.enabled", havingValue = "true", matchIfMissing = true)
 class IdentityJobs {
 
-  private final LoginThrottle throttle;
+  private final LoginThrottle loginThrottle;
+  private final RequestThrottle requestThrottle;
 
-  IdentityJobs(LoginThrottle throttle) {
-    this.throttle = throttle;
+  IdentityJobs(LoginThrottle loginThrottle, RequestThrottle requestThrottle) {
+    this.loginThrottle = loginThrottle;
+    this.requestThrottle = requestThrottle;
   }
 
   @Scheduled(cron = "0 15 3 * * *", zone = "${club.timezone}")
   @SchedulerLock(name = "identity-login-failure-purge", lockAtMostFor = "PT10M")
   void purgeLoginFailures() {
-    throttle.purge();
+    loginThrottle.purge();
+  }
+
+  @Scheduled(cron = "0 20 3 * * *", zone = "${club.timezone}")
+  @SchedulerLock(name = "identity-request-throttle-purge", lockAtMostFor = "PT10M")
+  void purgeRequestThrottle() {
+    requestThrottle.purge();
   }
 }

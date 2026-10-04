@@ -162,13 +162,15 @@ class RegistrationTest extends IntegrationTest {
     List<Future<?>> results = new ArrayList<>();
     try (ExecutorService pool = Executors.newFixedThreadPool(threads)) {
       for (int i = 0; i < threads; i++) {
+        String address = "192.0.2." + i;
         results.add(
             pool.submit(
                 () -> {
                   start.await();
                   registration.register(
                       new RegistrationService.Registration(
-                          email, STRONG_PASSWORD, "Sam Parent", null));
+                          email, STRONG_PASSWORD, "Sam Parent", null),
+                      address);
                   return null;
                 }));
       }

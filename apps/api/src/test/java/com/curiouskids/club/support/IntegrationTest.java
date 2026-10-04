@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -58,6 +59,11 @@ public abstract class IntegrationTest {
   @BeforeEach
   void setUpMockMvc() {
     mvc = mockMvc().build();
+    // Every MockMvc request comes from 127.0.0.1, so request limits would leak between tests.
+    context
+        .getBean(JdbcClient.class)
+        .sql("delete from request_throttle; delete from login_failure")
+        .update();
   }
 
   /** MockMvc with the real filter order: trace ID, Spring Session (JDBC), then Spring Security. */

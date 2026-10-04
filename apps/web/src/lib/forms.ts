@@ -11,3 +11,9 @@ export function fieldErrorsOf(error: unknown): FieldErrors {
   }
   return errors
 }
+
+/** Whole minutes to wait after a 429 RATE_LIMITED, or undefined for any other error. */
+export function rateLimitMinutes(error: unknown): number | undefined {
+  if (!(error instanceof ApiError) || error.code !== 'RATE_LIMITED') return undefined
+  return Math.max(1, Math.ceil((error.retryAfterSeconds ?? 3600) / 60))
+}

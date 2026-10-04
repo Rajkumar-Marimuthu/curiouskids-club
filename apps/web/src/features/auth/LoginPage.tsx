@@ -41,6 +41,11 @@ export function Component() {
         <h1 className="text-3xl font-bold">{t('pages.login')}</h1>
         <p className="mt-2 text-ink-muted">{t('login.intro')}</p>
       </div>
+      {params.get('reset') === 'done' && !login.error && (
+        <p role="status" className="rounded-card bg-brand-soft p-4">
+          {t('login.passwordChanged')}
+        </p>
+      )}
       {login.error instanceof ApiError && !login.error.isUnexpected && (
         <p role="alert" className="rounded-card bg-danger-soft p-4">
           {loginErrorMessage(login.error, t)}
@@ -77,6 +82,11 @@ export function Component() {
           {login.isPending ? t('login.submitting') : t('login.submit')}
         </Button>
       </form>
+      <p>
+        <Link to="/reset-password" className="font-semibold text-brand underline">
+          {t('login.forgot')}
+        </Link>
+      </p>
       <p>
         {t('login.noAccount')}{' '}
         <Link to="/register" className="font-semibold text-brand underline">

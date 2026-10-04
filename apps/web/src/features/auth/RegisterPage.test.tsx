@@ -102,3 +102,26 @@ describe('Register page', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 })
+
+describe('Register page limits', () => {
+  it('FR-ID-01: says how long to wait after too many registrations', async () => {
+    server.use(
+      http.post('*/api/v1/auth/register', () =>
+        problem(429, 'RATE_LIMITED', 'trace-1', undefined, { 'Retry-After': '600' }),
+      ),
+    )
+    const user = userEvent.setup()
+    renderRoute('/register')
+
+    await user.type(await screen.findByLabelText('Your name'), 'Sam Parent')
+    await user.type(screen.getByLabelText('Email address'), 'sam@example.com')
+    await user.type(screen.getByLabelText('Password'), 'purple giraffes read slowly')
+    await user.click(screen.getByLabelText('I am 18 or older'))
+    await user.click(screen.getByLabelText('I accept the terms and privacy notice'))
+    await user.click(screen.getByRole('button', { name: 'Create account' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Too many requests. Please wait 10 minutes and try again.',
+    )
+  })
+})
