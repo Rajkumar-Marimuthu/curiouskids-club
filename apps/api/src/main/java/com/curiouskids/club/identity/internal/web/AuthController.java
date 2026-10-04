@@ -3,6 +3,7 @@ package com.curiouskids.club.identity.internal.web;
 import com.curiouskids.club.identity.internal.PasswordResetService;
 import com.curiouskids.club.identity.internal.ProfileService;
 import com.curiouskids.club.identity.internal.RegistrationService;
+import com.curiouskids.club.identity.internal.StaffInvitationService;
 import com.curiouskids.club.shared.ProblemResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Public registration, email verification, password reset and email-change confirmation (FR-ID-01,
- * FR-ID-02, FR-ID-04, FR-ID-06).
+ * Public registration, email verification, password reset, email-change confirmation and staff
+ * invitation acceptance (FR-ID-01, FR-ID-02, FR-ID-04, FR-ID-06, FR-ID-07).
  */
 @RestController
 @Tag(name = "auth")
@@ -29,14 +30,17 @@ class AuthController {
   private final RegistrationService registration;
   private final PasswordResetService passwordReset;
   private final ProfileService profiles;
+  private final StaffInvitationService invitations;
 
   AuthController(
       RegistrationService registration,
       PasswordResetService passwordReset,
-      ProfileService profiles) {
+      ProfileService profiles,
+      StaffInvitationService invitations) {
     this.registration = registration;
     this.passwordReset = passwordReset;
     this.profiles = profiles;
+    this.invitations = invitations;
   }
 
   /** The same 202 whether or not the email is already registered. */
@@ -138,5 +142,18 @@ class AuthController {
           @Content(mediaType = PROBLEM, schema = @Schema(implementation = ProblemResponse.class)))
   void confirmEmailChange(@Valid @RequestBody EmailChangeConfirmRequest request) {
     profiles.confirmEmailChange(request.token());
+  }
+
+  /** Creates the staff account; the person then logs in. */
+  @PostMapping("/api/v1/auth/invitations/accept")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @ApiResponse(responseCode = "204", description = "Staff account created; log in to continue")
+  @ApiResponse(
+      responseCode = "400",
+      description = "TOKEN_INVALID, or VALIDATION_FAILED with field errors",
+      content =
+          @Content(mediaType = PROBLEM, schema = @Schema(implementation = ProblemResponse.class)))
+  void acceptInvitation(@Valid @RequestBody InvitationAcceptRequest request) {
+    invitations.accept(request.token(), request.password());
   }
 }

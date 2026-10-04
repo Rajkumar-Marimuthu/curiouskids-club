@@ -53,6 +53,7 @@ export const handlers = [
   http.post('*/api/v1/auth/password-reset/request', () => new HttpResponse(null, { status: 202 })),
   http.post('*/api/v1/auth/password-reset/confirm', () => new HttpResponse(null, { status: 204 })),
   http.post('*/api/v1/auth/email-change/confirm', () => new HttpResponse(null, { status: 204 })),
+  http.post('*/api/v1/auth/invitations/accept', () => new HttpResponse(null, { status: 204 })),
 ]
 
 /** A problem+json error as the API sends it (docs/architecture/api-conventions.md). */

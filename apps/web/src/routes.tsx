@@ -24,6 +24,7 @@ export const routes: RouteObject[] = [
       page('verify-email', () => import('./features/auth/VerifyEmailPage')),
       page('reset-password', () => import('./features/auth/ResetPasswordPage')),
       page('confirm-email', () => import('./features/auth/ConfirmEmailPage')),
+      page('accept-invitation', () => import('./features/auth/AcceptInvitationPage')),
       { path: '*', Component: NotFound },
     ],
   },

@@ -39,6 +39,8 @@ Each requirement has a stable ID, a statement, the business rules it relies on, 
 
 **FR-ID-07 (M) Staff accounts.** Rules: BR-31.
 - Given an admin, when inviting a volunteer by email, then a single-use invitation link is sent; accepting it creates a VOLUNTEER account.
+- Given an admin, when inviting with the ADMIN role, then accepting creates an ADMIN account. The link works for 7 days; a newer invitation for the same email replaces the older one; an email that already has an account cannot be invited (`CONFLICT`).
+- Given a club with no admin, when the API starts with `CLUB_BOOTSTRAP_ADMIN_EMAIL` set, then an ADMIN invitation is sent to that address, unless one sent earlier still works.
 - Given a volunteer, then admin-only screens and endpoints return 403.
 
 **FR-ID-08 (S) My data: export and delete.**

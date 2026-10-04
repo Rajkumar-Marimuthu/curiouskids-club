@@ -83,6 +83,24 @@ public class AccountEntity {
     return account;
   }
 
+  /** A staff account from an accepted invitation; the invitation proved the email (BR-31). */
+  public static AccountEntity staff(
+      UUID id, String email, String passwordHash, Role role, Instant now) {
+    if (role == Role.MEMBER) {
+      throw new IllegalArgumentException("Staff accounts are VOLUNTEER or ADMIN");
+    }
+    AccountEntity account = new AccountEntity();
+    account.id = id;
+    account.email = email;
+    account.passwordHash = passwordHash;
+    account.role = role;
+    account.status = AccountStatus.ACTIVE;
+    account.emailVerifiedAt = now;
+    account.createdAt = now;
+    account.updatedAt = now;
+    return account;
+  }
+
   public void changePassword(String passwordHash, Instant now) {
     this.passwordHash = passwordHash;
     updatedAt = now;

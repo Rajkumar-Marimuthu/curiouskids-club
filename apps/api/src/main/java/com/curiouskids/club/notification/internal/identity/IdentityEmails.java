@@ -4,6 +4,7 @@ import com.curiouskids.club.identity.EmailChangeRequested;
 import com.curiouskids.club.identity.EmailChanged;
 import com.curiouskids.club.identity.EmailVerificationRequested;
 import com.curiouskids.club.identity.PasswordResetRequested;
+import com.curiouskids.club.identity.StaffInvited;
 import com.curiouskids.club.notification.EmailType;
 import com.curiouskids.club.notification.Notifications;
 import com.curiouskids.club.notification.OutboxEmail;
@@ -66,5 +67,16 @@ class IdentityEmails {
             event.previousEmail(),
             Map.of(),
             "EMAIL_CHANGED:" + event.tokenId()));
+  }
+
+  @EventListener
+  void on(StaffInvited event) {
+    notifications.enqueue(
+        new OutboxEmail(
+            EmailType.STAFF_INVITATION,
+            null,
+            event.email(),
+            Map.of("path", "/accept-invitation?token=" + event.token()),
+            "STAFF_INVITATION:" + event.invitationId()));
   }
 }

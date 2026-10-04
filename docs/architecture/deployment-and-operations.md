@@ -60,6 +60,7 @@ Cost-conscious choices at launch: API tasks in public subnets with security grou
 | `APP_BASE_URL` | Links in emails |
 | `CLUB_TIMEZONE` | Default for `club.timezone` on first start |
 | `MAIL_FROM`, `AWS_REGION` | Email sending |
+| `CLUB_BOOTSTRAP_ADMIN_EMAIL` | While no admin exists, an ADMIN invitation goes to this address at start-up (T-014); no password is ever configured |
 | `COVERS_BUCKET`, `COVERS_BASE_URL` | Cover storage and CDN |
 
 Business rules are settings in the database, not variables (FR-ADM-01).

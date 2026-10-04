@@ -46,6 +46,11 @@ export function Component() {
           {t('login.passwordChanged')}
         </p>
       )}
+      {params.get('invited') === 'done' && !login.error && (
+        <p role="status" className="rounded-card bg-brand-soft p-4">
+          {t('login.invitationAccepted')}
+        </p>
+      )}
       {login.error instanceof ApiError && !login.error.isUnexpected && (
         <p role="alert" className="rounded-card bg-danger-soft p-4">
           {loginErrorMessage(login.error, t)}

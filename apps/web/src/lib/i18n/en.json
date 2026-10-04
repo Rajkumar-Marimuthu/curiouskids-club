@@ -64,7 +64,8 @@
     "audit": "Audit log",
     "notFound": "Page not found",
     "notFoundBody": "We couldn't find that page. It may have moved.",
-    "confirmEmail": "Confirm your new email"
+    "confirmEmail": "Confirm your new email",
+    "acceptInvitation": "Accept your invitation"
   },
   "errors": {
     "title": "Something went wrong",
@@ -123,7 +124,8 @@
     "noAccount": "New to the club?",
     "register": "Join the club",
     "forgot": "Forgot your password?",
-    "passwordChanged": "Your password has been changed. Log in with your new password."
+    "passwordChanged": "Your password has been changed. Log in with your new password.",
+    "invitationAccepted": "Your account is ready. Log in with your email and new password."
   },
   "resetPassword": {
     "requestIntro": "Enter the email address you registered with and we'll send you a link to choose a new password.",
@@ -212,5 +214,28 @@
     "done": "Your email address has been changed. Use it to log in from now on.",
     "toAccount": "Go to your account",
     "invalid": "This link has expired or was already used, or the address now has another account. You can ask for a new link on your account page."
+  },
+  "acceptInvitation": {
+    "intro": "You've been invited to help run Curiouskids Club. Choose a password to create your account.",
+    "password": "Choose a password",
+    "passwordHint": "At least 12 characters. A few random words make a good one.",
+    "save": "Create my account",
+    "saving": "Creating…",
+    "invalid": "This invitation has expired or was already used. Ask an admin to send you a new one."
+  },
+  "users": {
+    "intro": "Invite volunteers and admins. They get an email with a link to create their account; it works for 7 days.",
+    "inviteTitle": "Invite someone",
+    "email": "Email address",
+    "role": "Role",
+    "roles": {
+      "VOLUNTEER": "Volunteer",
+      "ADMIN": "Admin"
+    },
+    "invite": "Send invitation",
+    "inviting": "Sending…",
+    "invited": "Invitation sent to {{email}}. The link works until {{date}}.",
+    "required": "Please fill this in",
+    "exists": "This email already has an account."
   }
 }
