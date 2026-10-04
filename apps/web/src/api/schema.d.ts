@@ -4,6 +4,54 @@
  */
 
 export interface paths {
+    "/api/v1/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/verify-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["verifyEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/verify-email/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["resendVerification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/ping": {
         parameters: {
             query?: never;
@@ -24,6 +72,39 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Problem: {
+            type: string;
+            title: string;
+            /** Format: int32 */
+            status: number;
+            /** @enum {string} */
+            code: "VALIDATION_FAILED" | "UNAUTHENTICATED" | "FORBIDDEN" | "NOT_FOUND" | "METHOD_NOT_ALLOWED" | "NOT_ACCEPTABLE" | "CONFLICT" | "UNSUPPORTED_MEDIA_TYPE" | "EMAIL_NOT_VERIFIED" | "SLOT_REQUIRED" | "SLOT_FULL" | "SLOT_NOT_BOOKABLE" | "LIMIT_REACHED" | "ALREADY_HOLDING_TITLE" | "COPY_NOT_AVAILABLE" | "RENEWAL_NOT_ALLOWED" | "TOKEN_INVALID" | "IDEMPOTENCY_KEY_REUSED" | "RATE_LIMITED" | "INTERNAL_ERROR";
+            detail?: string;
+            traceId: string;
+            errors?: components["schemas"]["ProblemFieldError"][];
+        };
+        ProblemFieldError: {
+            field: string;
+            message: string;
+        };
+        RegisterRequest: {
+            /** Format: email */
+            email: string;
+            password: string;
+            name: string;
+            phone?: string;
+            /** @description The parent confirms they are 18 or older (BR-28) */
+            confirmAdult: boolean;
+            /** @description The parent accepts the terms and privacy notice (BR-28) */
+            acceptTerms: boolean;
+        };
+        VerifyEmailRequest: {
+            token: string;
+        };
+        ResendVerificationRequest: {
+            /** Format: email */
+            email: string;
+        };
         PingResponse: {
             status: string;
             /** Format: date-time */
@@ -38,6 +119,99 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterRequest"];
+            };
+        };
+        responses: {
+            /** @description Accepted; check your email */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description VALIDATION_FAILED with field errors */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    verifyEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyEmailRequest"];
+            };
+        };
+        responses: {
+            /** @description Email verified */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description TOKEN_INVALID or VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    resendVerification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResendVerificationRequest"];
+            };
+        };
+        responses: {
+            /** @description Accepted; check your email */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description VALIDATION_FAILED with field errors */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     ping: {
         parameters: {
             query?: never;

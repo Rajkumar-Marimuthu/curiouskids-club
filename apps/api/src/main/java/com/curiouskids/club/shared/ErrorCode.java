@@ -23,6 +23,7 @@ public enum ErrorCode {
   ALREADY_HOLDING_TITLE(HttpStatus.CONFLICT, "Already holding this title"),
   COPY_NOT_AVAILABLE(HttpStatus.CONFLICT, "Copy not available"),
   RENEWAL_NOT_ALLOWED(HttpStatus.UNPROCESSABLE_CONTENT, "Renewal not allowed"),
+  TOKEN_INVALID(HttpStatus.BAD_REQUEST, "Link is not valid"),
   IDEMPOTENCY_KEY_REUSED(HttpStatus.UNPROCESSABLE_CONTENT, "Idempotency key reused"),
   RATE_LIMITED(HttpStatus.TOO_MANY_REQUESTS, "Too many requests"),
   INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");

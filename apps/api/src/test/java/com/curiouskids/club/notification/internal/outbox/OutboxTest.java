@@ -48,6 +48,7 @@ class OutboxTest extends IntegrationTest {
   @BeforeEach
   void emptyOutbox() {
     jdbc.sql("delete from notification_outbox").update();
+    sender.reset();
   }
 
   @AfterEach
