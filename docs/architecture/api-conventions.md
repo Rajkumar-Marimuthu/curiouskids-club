@@ -25,6 +25,7 @@
 | Concurrency | Editable resources return an `ETag`; `PUT`/`PATCH` require `If-Match`; mismatch returns 412 |
 | Auth | Session cookie plus CSRF header `X-XSRF-TOKEN`; see `security-and-privacy.md` |
 | Rate limiting | Login, register, password reset and reserve return 429 `RATE_LIMITED` with `Retry-After` |
+| Unknown fields | A request body field the contract does not define is rejected with 400 `VALIDATION_FAILED`, naming the field in `errors` (keeps unwanted personal data out, BR-30) |
 | Caching | Public catalogue reads send `Cache-Control: public, max-age=60` with ETags; personal data is `no-store` |
 
 ## Errors
