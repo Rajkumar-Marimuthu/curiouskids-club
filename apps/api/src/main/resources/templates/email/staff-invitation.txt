@@ -1,0 +1,13 @@
+Curiouskids Club
+
+You're invited to help!
+
+You have been invited to help run Curiouskids Club. Use the link below to create your account.
+
+Create my account: [(${link})]
+
+The link works for 7 days.
+
+--
+This email is from Curiouskids Club, our neighbourhood lending library.
+If you were not expecting it, you can ignore it.
