@@ -74,6 +74,11 @@ public class AccountEntity {
     return account;
   }
 
+  public void changePassword(String passwordHash, Instant now) {
+    this.passwordHash = passwordHash;
+    updatedAt = now;
+  }
+
   public void markEmailVerified(Instant now) {
     if (emailVerifiedAt == null) {
       emailVerifiedAt = now;

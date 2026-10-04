@@ -1,6 +1,7 @@
 package com.curiouskids.club.notification.internal.identity;
 
 import com.curiouskids.club.identity.EmailVerificationRequested;
+import com.curiouskids.club.identity.PasswordResetRequested;
 import com.curiouskids.club.notification.EmailType;
 import com.curiouskids.club.notification.Notifications;
 import com.curiouskids.club.notification.OutboxEmail;
@@ -30,5 +31,16 @@ class IdentityEmails {
             event.email(),
             Map.of("path", "/verify-email?token=" + event.token()),
             "VERIFY_EMAIL:" + event.tokenId()));
+  }
+
+  @EventListener
+  void on(PasswordResetRequested event) {
+    notifications.enqueue(
+        new OutboxEmail(
+            EmailType.PASSWORD_RESET,
+            event.accountId(),
+            event.email(),
+            Map.of("path", "/reset-password?token=" + event.token()),
+            "PASSWORD_RESET:" + event.tokenId()));
   }
 }

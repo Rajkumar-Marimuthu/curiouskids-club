@@ -40,6 +40,8 @@ export const handlers = [
   http.post('*/api/v1/auth/register', () => new HttpResponse(null, { status: 202 })),
   http.post('*/api/v1/auth/verify-email', () => new HttpResponse(null, { status: 204 })),
   http.post('*/api/v1/auth/verify-email/resend', () => new HttpResponse(null, { status: 202 })),
+  http.post('*/api/v1/auth/password-reset/request', () => new HttpResponse(null, { status: 202 })),
+  http.post('*/api/v1/auth/password-reset/confirm', () => new HttpResponse(null, { status: 204 })),
 ]
 
 /** A problem+json error as the API sends it (docs/architecture/api-conventions.md). */
@@ -48,6 +50,7 @@ export function problem(
   code: Problem['code'],
   traceId = 'trace-123',
   errors?: Problem['errors'],
+  headers: Record<string, string> = {},
 ) {
   const body: Problem = {
     type: `https://curiouskids.example/problems/${code}`,
@@ -59,6 +62,6 @@ export function problem(
   }
   return HttpResponse.json(body, {
     status,
-    headers: { 'Content-Type': 'application/problem+json' },
+    headers: { 'Content-Type': 'application/problem+json', ...headers },
   })
 }

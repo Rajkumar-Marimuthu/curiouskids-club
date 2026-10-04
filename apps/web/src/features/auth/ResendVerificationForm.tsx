@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '../../components/ui/button'
 import { TextField } from '../../components/ui/field'
 import { apiClient, unwrap } from '../../lib/api'
-import { fieldErrorsOf } from '../../lib/forms'
+import { fieldErrorsOf, rateLimitMinutes } from '../../lib/forms'
 
 /**
  * FR-ID-02: asks for a new verification link. The answer is the same whether or not the email is
@@ -31,9 +31,16 @@ export function ResendVerificationForm() {
     resend.mutate(email.trim())
   }
 
+  const minutes = rateLimitMinutes(resend.error)
+
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
       <h2 className="text-xl font-bold">{t('verifyEmail.resendTitle')}</h2>
+      {minutes && (
+        <p role="alert" className="rounded-card bg-danger-soft p-4">
+          {t('errors.rateLimited', { minutes })}
+        </p>
+      )}
       <TextField
         label={t('register.email')}
         type="email"

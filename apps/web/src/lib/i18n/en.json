@@ -70,7 +70,8 @@
     "retry": "Try again",
     "backHome": "Back to home",
     "unexpected": "Something went wrong. Please try again in a moment.",
-    "reference": "Reference: {{traceId}}"
+    "reference": "Reference: {{traceId}}",
+    "rateLimited": "Too many requests. Please wait {{minutes}} minutes and try again."
   },
   "toast": {
     "close": "Dismiss"
@@ -118,6 +119,22 @@
     "failed": "Email or password is incorrect.",
     "rateLimited": "Too many attempts. Please wait {{minutes}} minutes and try again.",
     "noAccount": "New to the club?",
-    "register": "Join the club"
+    "register": "Join the club",
+    "forgot": "Forgot your password?",
+    "passwordChanged": "Your password has been changed. Log in with your new password."
+  },
+  "resetPassword": {
+    "requestIntro": "Enter the email address you registered with and we'll send you a link to choose a new password.",
+    "email": "Email address",
+    "send": "Send reset link",
+    "sending": "Sending…",
+    "sent": "If that email has an account, we've sent a link. It works for one hour. Check your spam folder if it doesn't arrive in a few minutes.",
+    "chooseIntro": "Choose a new password. You will be logged out on all your devices.",
+    "password": "New password",
+    "passwordHint": "At least 12 characters. A few random words make a good one.",
+    "required": "Please fill this in",
+    "save": "Save new password",
+    "saving": "Saving…",
+    "invalid": "This link has expired or was already used. Ask for a new one below."
   }
 }

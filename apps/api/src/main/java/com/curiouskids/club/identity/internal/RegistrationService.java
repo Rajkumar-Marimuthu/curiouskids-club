@@ -41,6 +41,7 @@ public class RegistrationService {
   private final ApplicationEventPublisher events;
   private final TransactionTemplate transaction;
   private final IdentityProperties properties;
+  private final RequestThrottle throttle;
   private final Ids ids;
   private final Clock clock;
 
@@ -53,6 +54,7 @@ public class RegistrationService {
       ApplicationEventPublisher events,
       TransactionTemplate transaction,
       IdentityProperties properties,
+      RequestThrottle throttle,
       Ids ids,
       Clock clock) {
     this.accounts = accounts;
@@ -63,6 +65,7 @@ public class RegistrationService {
     this.events = events;
     this.transaction = transaction;
     this.properties = properties;
+    this.throttle = throttle;
     this.ids = ids;
     this.clock = clock;
   }
@@ -74,9 +77,12 @@ public class RegistrationService {
    * Creates an unverified member and queues the verification email, or does nothing if the email is
    * already registered. Either way the caller sees the same outcome.
    *
-   * @throws ApiException VALIDATION_FAILED if the password is too weak
+   * @param clientAddress the caller's network address; only its hash is stored
+   * @throws ApiException VALIDATION_FAILED if the password is too weak; RATE_LIMITED after 10
+   *     registrations from one address in an hour
    */
-  public void register(Registration registration) {
+  public void register(Registration registration, String clientAddress) {
+    throttle.register(clientAddress);
     passwordPolicy
         .problem(registration.password())
         .ifPresent(
@@ -146,9 +152,12 @@ public class RegistrationService {
   /**
    * Sends a new verification link to an active, unverified account and invalidates older links.
    * Does nothing for unknown or already verified emails, without saying so.
+   *
+   * @throws com.curiouskids.club.shared.RateLimitedException if too many links were asked for
    */
-  public void resendVerification(String rawEmail) {
+  public void resendVerification(String rawEmail, String clientAddress) {
     String email = normalise(rawEmail);
+    throttle.emailLink(email, clientAddress);
     transaction.executeWithoutResult(
         status ->
             accounts
