@@ -36,6 +36,15 @@ public class AccountEntity {
   @Column(nullable = false)
   private AccountStatus status;
 
+  @Column(name = "pending_email")
+  private String pendingEmail;
+
+  @Column(name = "remind_pickup", nullable = false)
+  private boolean remindPickup = true;
+
+  @Column(name = "remind_due_soon", nullable = false)
+  private boolean remindDueSoon = true;
+
   @Column(name = "consent_version")
   private String consentVersion;
 
@@ -86,6 +95,29 @@ public class AccountEntity {
     }
   }
 
+  /** Remembers the address waiting for confirmation; a newer request replaces it (FR-ID-06). */
+  public void requestEmailChange(String newEmail, Instant now) {
+    pendingEmail = newEmail;
+    updatedAt = now;
+  }
+
+  /** Moves to the confirmed pending address, which is verified by that confirmation. */
+  public void confirmEmailChange(Instant now) {
+    email = pendingEmail;
+    pendingEmail = null;
+    emailVerifiedAt = now;
+    updatedAt = now;
+  }
+
+  /** Pickup and due-soon reminders can be switched off; overdue reminders cannot (BR-36). */
+  public void setReminders(boolean remindPickup, boolean remindDueSoon, Instant now) {
+    if (this.remindPickup != remindPickup || this.remindDueSoon != remindDueSoon) {
+      this.remindPickup = remindPickup;
+      this.remindDueSoon = remindDueSoon;
+      updatedAt = now;
+    }
+  }
+
   public boolean isEmailVerified() {
     return emailVerifiedAt != null;
   }
@@ -120,6 +152,18 @@ public class AccountEntity {
 
   public Instant getConsentAt() {
     return consentAt;
+  }
+
+  public String getPendingEmail() {
+    return pendingEmail;
+  }
+
+  public boolean isRemindPickup() {
+    return remindPickup;
+  }
+
+  public boolean isRemindDueSoon() {
+    return remindDueSoon;
   }
 
   public Instant getEmailVerifiedAt() {

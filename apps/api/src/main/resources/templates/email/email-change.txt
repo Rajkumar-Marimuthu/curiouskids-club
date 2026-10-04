@@ -1,0 +1,13 @@
+Curiouskids Club
+
+Confirm your new email
+
+Someone asked to use this address for their Curiouskids Club account. If it was you, use the link below to confirm it.
+
+Confirm my new email: [(${link})]
+
+The link works for 24 hours. Until you confirm, the account keeps its old address. If you did not ask for this, you can ignore this email.
+
+--
+This email is from Curiouskids Club, our neighbourhood lending library.
+If you were not expecting it, you can ignore it.

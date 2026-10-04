@@ -25,10 +25,10 @@ All tables also have `id` (UUID), `created_at`, `updated_at`; user-editable aggr
 
 | Table | Key columns | Notes |
 | --- | --- | --- |
-| `account` | `email` (case-insensitive unique), `password_hash`, `role` (MEMBER, VOLUNTEER, ADMIN), `family_id` (null for staff), `email_verified_at`, `status` (ACTIVE, DISABLED), `consent_version`, `consent_at` | Staff accounts have no family. Email stored lower-cased |
+| `account` | `email` (case-insensitive unique), `password_hash`, `role` (MEMBER, VOLUNTEER, ADMIN), `family_id` (null for staff), `email_verified_at`, `status` (ACTIVE, DISABLED), `consent_version`, `consent_at`, `pending_email`, `remind_pickup`, `remind_due_soon` | Staff accounts have no family. Email stored lower-cased. `pending_email` waits for its confirmation link (FR-ID-06); the unique email index decides who gets an address. Reminder toggles default to true (BR-36) |
 | `family` | `display_name`, `phone` (optional), `flagged_at` | One primary member account in release 1. `display_name` is the name the parent gives at registration |
 | `child` | `family_id`, `first_name` (1 to 40 characters), `age_band` (`0-2`, `3-5`, `6-8`, `9-12`, `13+`) | No other personal fields (BR-30); at most `limits.max-children` per family (BR-15), checked under a lock on the family row |
-| `verification_token` | `account_id`, `type` (EMAIL_VERIFY, PASSWORD_RESET, STAFF_INVITE), `token_hash`, `expires_at`, `used_at` | Store only a hash of the token |
+| `verification_token` | `account_id`, `type` (EMAIL_VERIFY, PASSWORD_RESET, STAFF_INVITE, EMAIL_CHANGE), `token_hash`, `expires_at`, `used_at` | Store only a hash of the token |
 | `title` | `isbn13` (unique, nullable), `title`, `authors` (text[]), `description`, `publisher`, `published_year`, `language`, `age_bands` (text[]), `cover_key`, `search_vector` (tsvector) | GIN index on `search_vector`; trigram index on title and authors |
 | `category`, `title_category` | name, slug; join table | |
 | `copy` | `title_id`, `barcode` (unique), `status`, `condition`, `notes` | Statuses: AVAILABLE, HELD, ON_LOAN, LOST, DAMAGED, WITHDRAWN |

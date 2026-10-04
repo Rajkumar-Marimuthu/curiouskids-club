@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{email/layout :: layout(~{::#heading}, ~{::#content})}">
+<body>
+<h1 id="heading" style="margin:0 0 16px;font-size:22px;">Confirm your new email</h1>
+<div id="content">
+  <p style="margin:0 0 16px;">Someone asked to use this address for their Curiouskids Club account. If it was you, press the button to confirm it.</p>
+  <p style="margin:0 0 24px;"><a th:href="${link}" style="display:inline-block;padding:12px 24px;background:#6d28d9;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:bold;">Confirm my new email</a></p>
+  <p style="margin:0 0 16px;">The link works for 24 hours. Until you confirm, the account keeps its old address. If you did not ask for this, you can ignore this email.</p>
+  <p style="margin:0;font-size:14px;color:#4b5563;">If the button does not work, copy this link into your browser:<br>
+    <span th:text="${link}" style="word-break:break-all;">link</span></p>
+</div>
+</body>
+</html>

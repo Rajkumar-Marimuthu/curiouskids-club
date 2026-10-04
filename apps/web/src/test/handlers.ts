@@ -4,6 +4,7 @@ import type { components } from '../api/schema'
 type PingResponse = components['schemas']['PingResponse']
 type Problem = components['schemas']['Problem']
 type Me = components['schemas']['MeResponse']
+type Profile = components['schemas']['ProfileResponse']
 
 export const pingOk: PingResponse = { status: 'ok', time: '2026-09-21T16:00:00Z' }
 
@@ -12,6 +13,13 @@ export const memberMe: Me = {
   role: 'MEMBER',
   familyId: '7d2e4f10-5a3b-4e8c-b1a2-9c0d8e7f6a52',
   emailVerified: true,
+}
+
+export const memberProfile: Profile = {
+  name: 'Sam Parent',
+  email: 'sam@example.com',
+  remindPickup: true,
+  remindDueSoon: true,
 }
 
 /** The logged-in account for this test; by default nobody is logged in. */
@@ -38,11 +46,13 @@ export const handlers = [
   http.post('*/api/v1/auth/login', () => HttpResponse.json(memberMe)),
   http.post('*/api/v1/auth/logout', () => new HttpResponse(null, { status: 204 })),
   http.get('*/api/v1/me/children', () => HttpResponse.json([])),
+  http.get('*/api/v1/me/profile', () => HttpResponse.json(memberProfile)),
   http.post('*/api/v1/auth/register', () => new HttpResponse(null, { status: 202 })),
   http.post('*/api/v1/auth/verify-email', () => new HttpResponse(null, { status: 204 })),
   http.post('*/api/v1/auth/verify-email/resend', () => new HttpResponse(null, { status: 202 })),
   http.post('*/api/v1/auth/password-reset/request', () => new HttpResponse(null, { status: 202 })),
   http.post('*/api/v1/auth/password-reset/confirm', () => new HttpResponse(null, { status: 204 })),
+  http.post('*/api/v1/auth/email-change/confirm', () => new HttpResponse(null, { status: 204 })),
 ]
 
 /** A problem+json error as the API sends it (docs/architecture/api-conventions.md). */

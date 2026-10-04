@@ -23,6 +23,7 @@ export const routes: RouteObject[] = [
       page('login', () => import('./features/auth/LoginPage')),
       page('verify-email', () => import('./features/auth/VerifyEmailPage')),
       page('reset-password', () => import('./features/auth/ResetPasswordPage')),
+      page('confirm-email', () => import('./features/auth/ConfirmEmailPage')),
       { path: '*', Component: NotFound },
     ],
   },

@@ -1,6 +1,7 @@
 package com.curiouskids.club.identity.internal.web;
 
 import com.curiouskids.club.identity.internal.PasswordResetService;
+import com.curiouskids.club.identity.internal.ProfileService;
 import com.curiouskids.club.identity.internal.RegistrationService;
 import com.curiouskids.club.shared.ProblemResponse;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Public registration, email verification and password reset (FR-ID-01, FR-ID-02, FR-ID-04). */
+/**
+ * Public registration, email verification, password reset and email-change confirmation (FR-ID-01,
+ * FR-ID-02, FR-ID-04, FR-ID-06).
+ */
 @RestController
 @Tag(name = "auth")
 class AuthController {
@@ -24,10 +28,15 @@ class AuthController {
 
   private final RegistrationService registration;
   private final PasswordResetService passwordReset;
+  private final ProfileService profiles;
 
-  AuthController(RegistrationService registration, PasswordResetService passwordReset) {
+  AuthController(
+      RegistrationService registration,
+      PasswordResetService passwordReset,
+      ProfileService profiles) {
     this.registration = registration;
     this.passwordReset = passwordReset;
+    this.profiles = profiles;
   }
 
   /** The same 202 whether or not the email is already registered. */
@@ -113,5 +122,21 @@ class AuthController {
           @Content(mediaType = PROBLEM, schema = @Schema(implementation = ProblemResponse.class)))
   void confirmPasswordReset(@Valid @RequestBody PasswordResetConfirmRequest request) {
     passwordReset.confirm(request.token(), request.password());
+  }
+
+  /** Public, so the link works on any device, logged in or not. */
+  @PostMapping("/api/v1/auth/email-change/confirm")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @ApiResponse(
+      responseCode = "204",
+      description = "The account now uses the new address; the previous address is told")
+  @ApiResponse(
+      responseCode = "400",
+      description =
+          "TOKEN_INVALID (also when the address now has another account) or VALIDATION_FAILED",
+      content =
+          @Content(mediaType = PROBLEM, schema = @Schema(implementation = ProblemResponse.class)))
+  void confirmEmailChange(@Valid @RequestBody EmailChangeConfirmRequest request) {
+    profiles.confirmEmailChange(request.token());
   }
 }

@@ -32,6 +32,10 @@ Each requirement has a stable ID, a statement, the business rules it relies on, 
 - Given a request containing any other child field, then it is rejected (no extra personal data is accepted).
 
 **FR-ID-06 (M) Manage my profile and preferences.** Change name, phone, password, email (re-verification required), and reminder preferences (BR-36).
+- Given a logged-in member, when changing name, phone or the pickup and due-soon reminder toggles, then they are saved; both toggles start on, and overdue reminders cannot be switched off.
+- Given the correct current password and a strong new one, when changing the password, then this session stays logged in (with a new session ID) and every other session of the account ends. A wrong current password counts as a failed login (FR-ID-03).
+- Given the correct current password, when asking for a new email, then a 24-hour single-use link goes to the new address and the account keeps its current email until the link is used; a newer request replaces the older link. If the new address already has an account, the response is the same and no link is sent.
+- Given the link, when it is used (logged in or not), then the account moves to the new address, which counts as verified, and a notice goes to the previous address. If the address has gained an account meanwhile, the link fails with `TOKEN_INVALID` and nothing changes.
 
 **FR-ID-07 (M) Staff accounts.** Rules: BR-31.
 - Given an admin, when inviting a volunteer by email, then a single-use invitation link is sent; accepting it creates a VOLUNTEER account.

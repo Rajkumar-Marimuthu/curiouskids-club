@@ -15,6 +15,12 @@ public enum EmailType {
   /** T-012: reset a forgotten password. */
   PASSWORD_RESET(Set.of("path")),
 
+  /** T-013: confirm a new email address before the account moves to it. */
+  EMAIL_CHANGE(Set.of("path")),
+
+  /** T-013: tell the previous address that the account's email changed. */
+  EMAIL_CHANGED(Set.of()),
+
   /** T-014: invite a volunteer or admin to create their account. */
   STAFF_INVITATION(Set.of("path"));
 
