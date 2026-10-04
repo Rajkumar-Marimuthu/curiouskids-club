@@ -11,6 +11,38 @@ export const apiClient = createClient<paths>({
   fetch: (request) => globalThis.fetch(request),
 })
 
+const CSRF_COOKIE = 'XSRF-TOKEN'
+const CSRF_HEADER = 'X-XSRF-TOKEN'
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
+
+function readCookie(name: string): string | undefined {
+  return globalThis.document?.cookie
+    .split('; ')
+    .find((pair) => pair.startsWith(`${name}=`))
+    ?.slice(name.length + 1)
+}
+
+/**
+ * Sends the CSRF token on every state-changing call (ADR-0004): the XSRF-TOKEN cookie echoed in the
+ * X-XSRF-TOKEN header. When the cookie is missing (first visit, or just after login or logout), the
+ * API sets a new one first.
+ */
+async function csrfToken(origin: string): Promise<string | undefined> {
+  const existing = readCookie(CSRF_COOKIE)
+  if (existing) return existing
+  await globalThis.fetch(`${origin}/api/v1/auth/csrf`, { credentials: 'same-origin' })
+  return readCookie(CSRF_COOKIE)
+}
+
+apiClient.use({
+  async onRequest({ request }) {
+    if (SAFE_METHODS.has(request.method)) return undefined
+    const token = await csrfToken(new URL(request.url).origin)
+    if (token) request.headers.set(CSRF_HEADER, decodeURIComponent(token))
+    return request
+  },
+})
+
 export type ApiClient = typeof apiClient
 
 /** An RFC 9457 problem+json error, carrying the stable `code` the UI switches on. */
@@ -19,10 +51,13 @@ export class ApiError extends Error {
   readonly code: string
   readonly traceId?: string
   readonly fieldErrors: { field: string; message: string }[]
+  /** Seconds to wait before trying again, from the Retry-After header of a 429. */
+  readonly retryAfterSeconds?: number
 
   constructor(
     status: number,
     problem: { code?: string; detail?: string; title?: string; traceId?: string; errors?: unknown },
+    retryAfterSeconds?: number,
   ) {
     super(problem.detail ?? problem.title ?? `HTTP ${status}`)
     this.name = 'ApiError'
@@ -30,6 +65,7 @@ export class ApiError extends Error {
     this.code = problem.code ?? 'UNKNOWN'
     this.traceId = problem.traceId
     this.fieldErrors = Array.isArray(problem.errors) ? problem.errors : []
+    this.retryAfterSeconds = retryAfterSeconds
   }
 
   /** Server faults and anything the UI cannot act on; shown as a global toast. */
@@ -45,7 +81,8 @@ export async function unwrap<T>(request: Promise<FetchResult<T>>): Promise<T> {
   const { data, error, response } = await request
   if (!response.ok) {
     const problem = typeof error === 'object' && error !== null ? error : {}
-    throw new ApiError(response.status, problem)
+    const retryAfter = Number(response.headers.get('Retry-After'))
+    throw new ApiError(response.status, problem, retryAfter > 0 ? retryAfter : undefined)
   }
   return data as T
 }

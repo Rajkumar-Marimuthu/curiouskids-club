@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, NavLink, Outlet } from 'react-router'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router'
+import { useLogout, useMe } from '../../lib/auth'
 import { cn } from '../../lib/utils'
+import { Button } from '../ui/button'
 import { Toaster } from '../ui/toaster'
 
 export type NavItem = {
@@ -13,11 +15,13 @@ type AppShellProps = {
   nav: NavItem[]
   /** Name of the area (for example "Volunteer desk"), shown next to the club name. */
   area?: string
+  /** Wraps the page, for example to require a role; the header stays visible either way. */
+  guard?: (page: ReactNode) => ReactNode
   children?: ReactNode
 }
 
 /** Page frame shared by every layout: skip link, header with navigation, main landmark. */
-export function AppShell({ nav, area, children }: AppShellProps) {
+export function AppShell({ nav, area, guard = (page) => page, children }: AppShellProps) {
   const { t } = useTranslation()
 
   return (
@@ -58,12 +62,34 @@ export function AppShell({ nav, area, children }: AppShellProps) {
               ))}
             </ul>
           </nav>
+          <LogoutButton />
         </div>
       </header>
       <main id="main-content" tabIndex={-1} className="mx-auto max-w-5xl px-4 py-8">
-        {children ?? <Outlet />}
+        {guard(children ?? <Outlet />)}
       </main>
       <Toaster />
     </div>
+  )
+}
+
+/** Shown to anyone logged in; ends the session and returns to the home page (FR-ID-03). */
+function LogoutButton() {
+  const { t } = useTranslation()
+  const me = useMe()
+  const logout = useLogout()
+  const navigate = useNavigate()
+  if (!me.data) return null
+  return (
+    <Button
+      variant="ghost"
+      className="sm:ml-auto"
+      disabled={logout.isPending}
+      onClick={() =>
+        logout.mutate(undefined, { onSuccess: () => navigate('/', { replace: true }) })
+      }
+    >
+      {t('nav.logout')}
+    </Button>
   )
 }

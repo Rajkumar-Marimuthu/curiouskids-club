@@ -1,7 +1,9 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { RouteError } from './components/RouteError'
+import { loggedInAs } from './test/handlers'
 import { renderRoute } from './test/render'
+import { server } from './test/server'
 
 const routeMap: [path: string, title: string][] = [
   ['/books', 'Books'],
@@ -27,6 +29,7 @@ const routeMap: [path: string, title: string][] = [
 
 describe('route map (docs/architecture/overview.md)', () => {
   it.each(routeMap)('%s renders its page', async (path, title) => {
+    server.use(loggedInAs('ADMIN'))
     renderRoute(path)
 
     expect(await screen.findByRole('heading', { level: 1, name: title })).toBeInTheDocument()
@@ -34,6 +37,7 @@ describe('route map (docs/architecture/overview.md)', () => {
   })
 
   it('shows the area name in staff and admin layouts', async () => {
+    server.use(loggedInAs('VOLUNTEER'))
     renderRoute('/staff/scan')
     expect(await screen.findByText('Volunteer desk')).toBeInTheDocument()
   })

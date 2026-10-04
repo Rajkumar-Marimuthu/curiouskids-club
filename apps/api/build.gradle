@@ -41,14 +41,17 @@ dependencies {
 	implementation 'net.javacrumbs.shedlock:shedlock-spring:7.10.1'
 	implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:7.10.1'
 	implementation 'software.amazon.awssdk:sesv2'
+	// T-012: authentication and authorisation, sessions in PostgreSQL (ADR-0004).
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-session-jdbc'
 	// T-011: Argon2id password hashing (security-and-privacy.md); Argon2 needs BouncyCastle.
-	implementation 'org.springframework.security:spring-security-crypto'
 	implementation 'org.bouncycastle:bcprov-jdk18on:1.86'
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
 	testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
 	testImplementation 'org.testcontainers:testcontainers-postgresql'
 	testImplementation 'com.tngtech.archunit:archunit:1.5.1'

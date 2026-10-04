@@ -22,7 +22,10 @@
     "closures": "Closures",
     "settings": "Settings",
     "users": "Users",
-    "audit": "Audit log"
+    "audit": "Audit log",
+    "logout": "Log out",
+    "staffDesk": "Volunteer desk",
+    "admin": "Administration"
   },
   "areas": {
     "staff": "Volunteer desk",
@@ -100,5 +103,21 @@
     "resendTitle": "Send me a new link",
     "resend": "Send new link",
     "resent": "If that email needs confirming, we've sent a new link. It works for 24 hours."
+  },
+  "auth": {
+    "noAccessTitle": "You can't open this page",
+    "noAccessBody": "This page is for club volunteers or admins. If you think you should have access, ask an admin."
+  },
+  "login": {
+    "intro": "Welcome back. Log in to reserve books and see your loans.",
+    "email": "Email address",
+    "password": "Password",
+    "required": "Please fill this in",
+    "submit": "Log in",
+    "submitting": "Logging in…",
+    "failed": "Email or password is incorrect.",
+    "rateLimited": "Too many attempts. Please wait {{minutes}} minutes and try again.",
+    "noAccount": "New to the club?",
+    "register": "Join the club"
   }
 }

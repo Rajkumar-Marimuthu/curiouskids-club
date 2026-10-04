@@ -11,5 +11,6 @@ beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 afterEach(() => {
   cleanup()
   server.resetHandlers()
+  document.cookie = 'XSRF-TOKEN=; max-age=0; path=/'
 })
 afterAll(() => server.close())

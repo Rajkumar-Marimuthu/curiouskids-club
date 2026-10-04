@@ -1,13 +1,36 @@
 import { useTranslation } from 'react-i18next'
+import { useMe, type Me } from '../../lib/auth'
 import { AppShell, type NavItem } from './AppShell'
+import { RequireRole } from './RequireRole'
+
+/** Links to the areas a logged-in user can open, by role. */
+function useAccountNav(me: Me | null | undefined): NavItem[] {
+  const { t } = useTranslation()
+  if (!me) return []
+  const items: NavItem[] = [
+    { to: '/my/reservations', label: t('nav.myReservations') },
+    { to: '/account', label: t('nav.account') },
+  ]
+  if (me.role !== 'MEMBER') items.push({ to: '/staff/pick-list', label: t('nav.staffDesk') })
+  if (me.role === 'ADMIN') items.push({ to: '/admin/windows', label: t('nav.admin') })
+  return items
+}
 
 function usePublicNav(): NavItem[] {
   const { t } = useTranslation()
+  const me = useMe()
+  const account = useAccountNav(me.data)
   return [
     { to: '/', label: t('nav.home') },
     { to: '/books', label: t('nav.books') },
-    { to: '/login', label: t('nav.login') },
-    { to: '/register', label: t('nav.register') },
+    ...(me.data
+      ? account
+      : me.isPending
+        ? []
+        : [
+            { to: '/login', label: t('nav.login') },
+            { to: '/register', label: t('nav.register') },
+          ]),
   ]
 }
 
@@ -16,7 +39,7 @@ export function PublicLayout() {
   return <AppShell nav={usePublicNav()} />
 }
 
-/** Signed-in families. Access control arrives with authentication (T-012). */
+/** Logged-in families (and staff, who may also borrow). */
 export function MemberLayout() {
   const { t } = useTranslation()
   return (
@@ -27,6 +50,7 @@ export function MemberLayout() {
         { to: '/my/loans', label: t('nav.myLoans') },
         { to: '/account', label: t('nav.account') },
       ]}
+      guard={(page) => <RequireRole>{page}</RequireRole>}
     />
   )
 }
@@ -43,6 +67,7 @@ export function StaffLayout() {
         { to: '/staff/overdue', label: t('nav.overdue') },
         { to: '/staff/titles', label: t('nav.titles') },
       ]}
+      guard={(page) => <RequireRole roles={['VOLUNTEER', 'ADMIN']}>{page}</RequireRole>}
     />
   )
 }
@@ -60,6 +85,7 @@ export function AdminLayout() {
         { to: '/admin/users', label: t('nav.users') },
         { to: '/admin/audit', label: t('nav.audit') },
       ]}
+      guard={(page) => <RequireRole roles={['ADMIN']}>{page}</RequireRole>}
     />
   )
 }

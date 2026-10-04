@@ -1,5 +1,6 @@
 package com.curiouskids.club.shared.internal.web;
 
+import com.curiouskids.club.shared.Problems;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class TraceIdFilter extends OncePerRequestFilter {
 
   public static final String HEADER = "X-Trace-Id";
-  public static final String MDC_KEY = "traceId";
+  public static final String MDC_KEY = Problems.TRACE_ID_MDC_KEY;
 
   private static final Pattern VALID = Pattern.compile("[A-Za-z0-9-]{8,64}");
   private static final Logger log = LoggerFactory.getLogger(TraceIdFilter.class);

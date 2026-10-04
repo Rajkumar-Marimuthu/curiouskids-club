@@ -1,5 +1,6 @@
 package com.curiouskids.club.identity.internal.web;
 
+import static com.curiouskids.club.support.Csrf.csrf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -140,6 +141,7 @@ class RegistrationTest extends IntegrationTest {
     MvcResult result =
         mvc.perform(
                 post("/api/v1/auth/register")
+                    .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(json.writeValueAsString(body)))
             .andExpect(status().isBadRequest())
@@ -287,6 +289,7 @@ class RegistrationTest extends IntegrationTest {
   private ResultActions register(String email, String password) throws Exception {
     return mvc.perform(
         post("/api/v1/auth/register")
+            .with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.writeValueAsString(body(email, password))));
   }
@@ -294,6 +297,7 @@ class RegistrationTest extends IntegrationTest {
   private ResultActions verify(String token) throws Exception {
     return mvc.perform(
         post("/api/v1/auth/verify-email")
+            .with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.writeValueAsString(Map.of("token", token))));
   }
@@ -301,6 +305,7 @@ class RegistrationTest extends IntegrationTest {
   private ResultActions resend(String email) throws Exception {
     return mvc.perform(
         post("/api/v1/auth/verify-email/resend")
+            .with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.writeValueAsString(Map.of("email", email))));
   }
