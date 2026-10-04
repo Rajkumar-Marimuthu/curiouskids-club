@@ -188,6 +188,106 @@ paths:
       responses:
         '204':
           description: The XSRF-TOKEN cookie is set
+  /api/v1/me/children:
+    get:
+      tags:
+        - family
+      operationId: list
+      responses:
+        '200':
+          description: The family's children, oldest profile first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChildResponse'
+    post:
+      tags:
+        - family
+      operationId: add
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChildRequest'
+        required: true
+      responses:
+        '201':
+          description: Child added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChildResponse'
+        '400':
+          description: VALIDATION_FAILED with field errors, including any field other than these
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '422':
+          description: 'LIMIT_REACHED: the family already has the most children allowed'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/me/children/{id}:
+    delete:
+      tags:
+        - family
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Child removed
+        '404':
+          description: 'NOT_FOUND: no such child in your family'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    patch:
+      tags:
+        - family
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChildUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Child changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChildResponse'
+        '400':
+          description: VALIDATION_FAILED with field errors, including any field other than these
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: 'NOT_FOUND: no such child in your family'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
   /api/v1/ping:
     get:
       tags:
@@ -371,6 +471,64 @@ components:
         - accountId
         - emailVerified
         - role
+    ChildRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        firstName:
+          type: string
+          maxLength: 40
+          minLength: 1
+        ageBand:
+          type: string
+          enum:
+            - 0-2
+            - 3-5
+            - 6-8
+            - 9-12
+            - 13+
+          pattern: 0-2|3-5|6-8|9-12|13\+
+      required:
+        - ageBand
+        - firstName
+    ChildUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        firstName:
+          type: string
+          maxLength: 40
+          minLength: 1
+          pattern: .*\S.*
+        ageBand:
+          type: string
+          enum:
+            - 0-2
+            - 3-5
+            - 6-8
+            - 9-12
+            - 13+
+          pattern: 0-2|3-5|6-8|9-12|13\+
+    ChildResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        ageBand:
+          type: string
+          enum:
+            - 0-2
+            - 3-5
+            - 6-8
+            - 9-12
+            - 13+
+      required:
+        - ageBand
+        - firstName
+        - id
     PingResponse:
       type: object
       properties:

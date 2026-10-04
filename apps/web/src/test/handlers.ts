@@ -37,6 +37,7 @@ export const handlers = [
   loggedInAs(null),
   http.post('*/api/v1/auth/login', () => HttpResponse.json(memberMe)),
   http.post('*/api/v1/auth/logout', () => new HttpResponse(null, { status: 204 })),
+  http.get('*/api/v1/me/children', () => HttpResponse.json([])),
   http.post('*/api/v1/auth/register', () => new HttpResponse(null, { status: 202 })),
   http.post('*/api/v1/auth/verify-email', () => new HttpResponse(null, { status: 204 })),
   http.post('*/api/v1/auth/verify-email/resend', () => new HttpResponse(null, { status: 202 })),

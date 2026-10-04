@@ -84,6 +84,8 @@ class SecurityConfig {
                         "/v3/api-docs/**",
                         "/v3/api-docs.yaml")
                     .permitAll()
+                    .requestMatchers("/api/v1/me/**")
+                    .hasRole("MEMBER")
                     .requestMatchers("/api/v1/staff/**")
                     .hasAnyRole("VOLUNTEER", "ADMIN")
                     .requestMatchers("/api/v1/admin/**")
