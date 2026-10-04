@@ -60,6 +60,7 @@ RFC 9457 `application/problem+json`:
 | `ALREADY_HOLDING_TITLE` | 409 | BR-14 |
 | `COPY_NOT_AVAILABLE` | 409 | Copy cannot be allocated or scanned in this state |
 | `RENEWAL_NOT_ALLOWED` | 422 | BR-09 |
+| `TOKEN_INVALID` | 400 | Email verification, reset or invitation token is unknown, expired, used or replaced; ask for a new one |
 | `IDEMPOTENCY_KEY_REUSED` | 422 | Key reused with a different request |
 | `RATE_LIMITED` | 429 | Slow down |
 | `METHOD_NOT_ALLOWED` | 405 | HTTP method not supported on this path |
@@ -75,7 +76,7 @@ Every response carries an `X-Trace-Id` header with the same value as `traceId`. 
 
 | Area | Method and path | Who |
 | --- | --- | --- |
-| Auth | `POST /auth/register`, `POST /auth/verify-email`, `POST /auth/login`, `POST /auth/logout`, `POST /auth/password-reset/request`, `POST /auth/password-reset/confirm`, `POST /auth/invitations/accept`, `GET /auth/me`, `GET /auth/csrf` | Public / member |
+| Auth | `POST /auth/register`, `POST /auth/verify-email`, `POST /auth/verify-email/resend`, `POST /auth/login`, `POST /auth/logout`, `POST /auth/password-reset/request`, `POST /auth/password-reset/confirm`, `POST /auth/invitations/accept`, `GET /auth/me`, `GET /auth/csrf` | Public / member |
 | Catalogue | `GET /titles`, `GET /titles/{id}`, `GET /categories` | Public |
 | Slots | `GET /slots?from=&to=` | Public (marks bookable for a logged-in member) |
 | Family | `GET/PATCH /me/profile`, `GET/POST /me/children`, `PATCH/DELETE /me/children/{id}`, `POST /me/data-export`, `POST /me/delete-request` | Member |

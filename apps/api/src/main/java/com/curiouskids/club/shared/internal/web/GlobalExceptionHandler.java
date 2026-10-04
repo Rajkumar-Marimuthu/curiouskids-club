@@ -39,6 +39,13 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(ApiException.class)
   ResponseEntity<Object> handleApiException(ApiException ex, WebRequest request) {
     ProblemDetail body = ProblemDetail.forStatusAndDetail(ex.code().status(), ex.getMessage());
+    if (!ex.fieldErrors().isEmpty()) {
+      body.setProperty(
+          "errors",
+          ex.fieldErrors().stream()
+              .map(e -> Map.of("field", e.field(), "message", e.message()))
+              .toList());
+    }
     return toResponse(body, ex.code(), new HttpHeaders());
   }
 

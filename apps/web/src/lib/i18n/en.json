@@ -71,5 +71,34 @@
   },
   "toast": {
     "close": "Dismiss"
+  },
+  "register": {
+    "intro": "Create a family account to reserve books. It takes a minute.",
+    "name": "Your name",
+    "email": "Email address",
+    "password": "Password",
+    "passwordHint": "At least 12 characters. A few random words make a good one.",
+    "phone": "Phone number (optional)",
+    "phoneHint": "Only used if we need to reach you about a pickup.",
+    "confirmAdult": "I am 18 or older",
+    "confirmAdultRequired": "Please confirm you are 18 or older",
+    "acceptTerms": "I accept the terms and privacy notice",
+    "acceptTermsRequired": "Please accept the terms and privacy notice",
+    "required": "Please fill this in",
+    "fixErrors": "Please fix the highlighted fields.",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "checkEmailTitle": "Check your email",
+    "checkEmail": "We've sent a link to {{email}}. Open it to confirm your email address. If it doesn't arrive in a few minutes, check your spam folder."
+  },
+  "verifyEmail": {
+    "checking": "Checking your link…",
+    "done": "Your email is confirmed. Welcome to the club!",
+    "browse": "Browse books",
+    "invalid": "This link has expired or was already used. Ask for a new one below.",
+    "noToken": "Open the link in the email we sent you. If you can't find it, ask for a new one.",
+    "resendTitle": "Send me a new link",
+    "resend": "Send new link",
+    "resent": "If that email needs confirming, we've sent a new link. It works for 24 hours."
   }
 }

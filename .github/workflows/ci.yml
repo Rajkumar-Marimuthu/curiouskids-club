@@ -99,7 +99,7 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Start database and API
         run: |
-          docker compose -f infra/local/docker-compose.yml up -d --wait postgres
+          docker compose -f infra/local/docker-compose.yml up -d --wait postgres mailpit
           ./apps/api/gradlew -p apps/api bootRun --args='--spring.profiles.active=local' > api.log 2>&1 &
           timeout 300 bash -c 'until curl -sf localhost:8080/actuator/health/readiness; do sleep 3; done'
       - name: E2E smoke
