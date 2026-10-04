@@ -6,3 +6,7 @@ spring:
   mail:
     host: localhost
     port: ${MAILPIT_SMTP_PORT:1025}
+
+springdoc:
+  api-docs:
+    enabled: true

@@ -1,3 +1,32 @@
 spring:
   application:
     name: club-api
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    locations: classpath:db/migration
+  mvc:
+    problemdetails:
+      enabled: false # GlobalExceptionHandler renders problem+json itself
+
+club:
+  timezone: Europe/London
+
+logging:
+  structured:
+    format:
+      console: ecs
+
+springdoc:
+  api-docs:
+    enabled: false # exported only locally and in tests (contract check)
+    version: openapi_3_1
+  override-with-generic-response: false
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true

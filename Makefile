@@ -24,8 +24,9 @@ format-check-api:
 format-check-web:
 	$(NPM) run format:check
 
+# Tests plus the JaCoCo coverage gates (NFR-11).
 api-test:
-	$(GRADLE) test
+	$(GRADLE) test jacocoTestCoverageVerification
 
 web-test:
 	$(NPM) run lint
@@ -44,8 +45,11 @@ format:
 	$(GRADLE) spotlessApply
 	$(NPM) run format
 
+# Regenerate TypeScript types for the web app from the contract. Output is committed; never edit it.
+# Run via npx with a pinned version: openapi-typescript 7 declares a TypeScript 5 peer, which the
+# web app's TypeScript 6 would conflict with as a devDependency.
 api-client:
-	@echo "make api-client: not implemented until T-003 (contracts/openapi.yaml exists)"
+	cd apps/web && npx --yes openapi-typescript@7.13.0 ../../contracts/openapi.yaml -o src/api/schema.d.ts
 
 seed:
 	@echo "make seed: not implemented yet"

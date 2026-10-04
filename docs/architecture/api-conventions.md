@@ -62,6 +62,14 @@ RFC 9457 `application/problem+json`:
 | `RENEWAL_NOT_ALLOWED` | 422 | BR-09 |
 | `IDEMPOTENCY_KEY_REUSED` | 422 | Key reused with a different request |
 | `RATE_LIMITED` | 429 | Slow down |
+| `METHOD_NOT_ALLOWED` | 405 | HTTP method not supported on this path |
+| `NOT_ACCEPTABLE` | 406 | Requested response format not available |
+| `UNSUPPORTED_MEDIA_TYPE` | 415 | Request body format not supported |
+| `INTERNAL_ERROR` | 500 | Unexpected server error; `detail` is generic and the `traceId` finds the log entry |
+
+Framework errors with no specific code use the generic code for their status (a 400 without a more specific code is `VALIDATION_FAILED`).
+
+Every response carries an `X-Trace-Id` header with the same value as `traceId`. A well-formed incoming `X-Trace-Id` (8 to 64 letters, digits or hyphens) is reused; otherwise the API generates one.
 
 ## Initial resource map
 
