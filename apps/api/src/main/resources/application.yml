@@ -30,6 +30,9 @@ server:
 
 club:
   timezone: Europe/London
+  identity:
+    # T-014: while the club has no admin, an ADMIN invitation goes to this address at start-up.
+    bootstrap-admin-email: ${CLUB_BOOTSTRAP_ADMIN_EMAIL:}
   jobs:
     enabled: true # scheduled jobs; tests turn them off and run jobs directly
   notification:

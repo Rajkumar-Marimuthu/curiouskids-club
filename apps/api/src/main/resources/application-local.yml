@@ -13,6 +13,7 @@ springdoc:
 
 club:
   identity:
+    bootstrap-admin-email: ${CLUB_BOOTSTRAP_ADMIN_EMAIL:admin@curiouskids.local} # see Mailpit
     request-limits: # every local request (and make e2e) comes from one address
       register-per-address: 1000
       email-links-per-address: 1000

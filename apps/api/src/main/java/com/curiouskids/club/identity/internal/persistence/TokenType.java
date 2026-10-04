@@ -6,7 +6,6 @@ import java.time.Duration;
 public enum TokenType {
   EMAIL_VERIFY(Duration.ofHours(24)),
   PASSWORD_RESET(Duration.ofHours(1)),
-  STAFF_INVITE(Duration.ofDays(7)),
   EMAIL_CHANGE(Duration.ofHours(24));
 
   private final Duration lifetime;

@@ -13,6 +13,7 @@ const routeMap: [path: string, title: string][] = [
   ['/verify-email', 'Verify your email'],
   ['/reset-password', 'Reset your password'],
   ['/confirm-email', 'Confirm your new email'],
+  ['/accept-invitation', 'Accept your invitation'],
   ['/account', 'Your account'],
   ['/account/children', 'Your children'],
   ['/my/reservations', 'My reservations'],

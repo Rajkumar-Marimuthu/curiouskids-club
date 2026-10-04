@@ -50,6 +50,7 @@ class RegistrationTest extends IntegrationTest {
   void emptyTables() {
     jdbc.sql("delete from notification_outbox").update();
     jdbc.sql("delete from verification_token").update();
+    jdbc.sql("delete from staff_invitation").update();
     jdbc.sql("delete from account").update();
     jdbc.sql("delete from family").update();
   }
