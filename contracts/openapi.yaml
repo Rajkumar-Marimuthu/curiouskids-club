@@ -144,6 +144,26 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+  /api/v1/auth/invitations/accept:
+    post:
+      tags:
+        - auth
+      operationId: acceptInvitation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationAcceptRequest'
+        required: true
+      responses:
+        '204':
+          description: Staff account created; log in to continue
+        '400':
+          description: TOKEN_INVALID, or VALIDATION_FAILED with field errors
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
   /api/v1/auth/login:
     post:
       tags:
@@ -391,6 +411,36 @@ paths:
                 $ref: '#/components/schemas/Problem'
         '429':
           description: 'RATE_LIMITED: too many wrong passwords or emailed links; see Retry-After'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/admin/invitations:
+    post:
+      tags:
+        - admin
+      operationId: invite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationRequest'
+        required: true
+      responses:
+        '201':
+          description: Invitation sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationResponse'
+        '400':
+          description: VALIDATION_FAILED with field errors
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '409':
+          description: 'CONFLICT: the email already has an account'
           content:
             application/problem+json:
               schema:
@@ -716,6 +766,59 @@ components:
           minLength: 1
       required:
         - token
+    InvitationAcceptRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          maxLength: 100
+          minLength: 1
+        password:
+          type: string
+          maxLength: 128
+          minLength: 12
+      required:
+        - password
+        - token
+    InvitationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+          minLength: 1
+        role:
+          type: string
+          enum:
+            - VOLUNTEER
+            - ADMIN
+          pattern: VOLUNTEER|ADMIN
+      required:
+        - email
+        - role
+    InvitationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - VOLUNTEER
+            - ADMIN
+        expiresAt:
+          type: string
+          format: date-time
+          description: When the link stops working
+      required:
+        - email
+        - expiresAt
+        - id
+        - role
     PingResponse:
       type: object
       properties:
