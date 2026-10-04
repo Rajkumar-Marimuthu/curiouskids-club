@@ -44,6 +44,8 @@ public class EmailTemplates {
     return switch (type) {
       case VERIFY_EMAIL -> "Please confirm your email for Curiouskids Club";
       case PASSWORD_RESET -> "Reset your Curiouskids Club password";
+      case EMAIL_CHANGE -> "Confirm your new email for Curiouskids Club";
+      case EMAIL_CHANGED -> "Your Curiouskids Club email address was changed";
       case STAFF_INVITATION -> "You're invited to help run Curiouskids Club";
     };
   }

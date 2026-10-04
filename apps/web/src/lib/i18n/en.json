@@ -63,7 +63,8 @@
     "users": "Users",
     "audit": "Audit log",
     "notFound": "Page not found",
-    "notFoundBody": "We couldn't find that page. It may have moved."
+    "notFoundBody": "We couldn't find that page. It may have moved.",
+    "confirmEmail": "Confirm your new email"
   },
   "errors": {
     "title": "Something went wrong",
@@ -172,5 +173,44 @@
     "removed": "{{name}} has been removed.",
     "limitReached": "You have added as many children as a family can have. Remove one to add another.",
     "notFound": "That child has already been removed."
+  },
+  "account": {
+    "intro": "Your contact details, reminder emails, login email and password.",
+    "detailsTitle": "Your details",
+    "name": "Your name",
+    "phone": "Phone (optional)",
+    "phoneHint": "Volunteers only use it if there is a problem with a pickup. Leave it empty to remove it.",
+    "saveDetails": "Save details",
+    "detailsSaved": "Your details have been saved.",
+    "remindersTitle": "Reminder emails",
+    "remindersIntro": "Send me a reminder:",
+    "remindPickup": "Before my pickup window",
+    "remindDueSoon": "When a book is due back soon",
+    "overdueAlways": "Reminders about overdue books are always sent.",
+    "saveReminders": "Save reminders",
+    "remindersSaved": "Your reminder choices have been saved.",
+    "emailTitle": "Login email",
+    "currentEmail": "You log in with {{email}}.",
+    "pendingEmail": "We sent a confirmation link to {{email}}. Your login email changes when you use it.",
+    "newEmail": "New email address",
+    "newEmailHint": "We'll send a link to the new address. Until you use it, nothing changes.",
+    "changeEmail": "Send confirmation link",
+    "emailSent": "Check {{email}} for a link to confirm the change. It works for 24 hours.",
+    "currentPassword": "Current password",
+    "passwordTitle": "Password",
+    "newPassword": "New password",
+    "newPasswordHint": "At least 12 characters. A few random words make a good one.",
+    "passwordOtherDevices": "You stay logged in here and are logged out on your other devices.",
+    "changePassword": "Change password",
+    "passwordChanged": "Your password has been changed. You've been logged out on your other devices.",
+    "required": "Please fill this in",
+    "saving": "Saving…",
+    "sending": "Sending…"
+  },
+  "confirmEmail": {
+    "checking": "Confirming your new email…",
+    "done": "Your email address has been changed. Use it to log in from now on.",
+    "toAccount": "Go to your account",
+    "invalid": "This link has expired or was already used, or the address now has another account. You can ask for a new link on your account page."
   }
 }

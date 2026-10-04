@@ -1,8 +1,8 @@
-# T-013 Profile and child profiles (part 1 of 2: child profiles)
+# T-013 Profile and child profiles
 
-**Milestone:** M1 | **Size:** S (split in two PRs) | **Depends on:** T-012 | **Status:** In progress
+**Milestone:** M1 | **Size:** S (split in two PRs) | **Depends on:** T-012 | **Status:** Done
 
-Part 1 (this PR): child profiles (FR-ID-05) and the reusable other-family access test. Part 2: profile, password and email change, reminder preferences (FR-ID-06).
+Part 1 (PR #20): child profiles (FR-ID-05) and the reusable other-family access test. Part 2: profile, password and email change, reminder preferences (FR-ID-06).
 
 ## Why
 
@@ -34,9 +34,35 @@ Families record which children borrow, with the least personal data possible, be
 - [x] Logs about children carry IDs only.
 - [x] The page has no axe violations.
 
+## Part 2: profile and preferences (FR-ID-06)
+
+### References
+
+- Requirements: FR-ID-06, FR-ID-03 (wrong current passwords count as failed logins), NFR-06
+- Rules: BR-36 (pickup and due-soon reminders can be switched off, overdue cannot)
+- Design: `docs/architecture/domain-model.md` (`account`, `verification_token`), `docs/architecture/security-and-privacy.md` (tokens, sessions, request limits)
+- Contract: `GET/PATCH /api/v1/me/profile`, `POST /api/v1/me/password`, `POST /api/v1/me/email`, `POST /api/v1/auth/email-change/confirm`; `ProfileResponse`, `ProfileUpdateRequest`, `PasswordChangeRequest`, `EmailChangeRequest`, `EmailChangeConfirmRequest`
+
+### Scope
+
+- Migration `V7__account_profile.sql`: `account.pending_email`, `remind_pickup` and `remind_due_soon` (default true); token type `EMAIL_CHANGE`.
+- `ProfileService`: profile read and change (name and phone on the family, toggles on the account), password change, email change request and confirmation.
+- Emails: `EMAIL_CHANGE` (link to `/confirm-email`, 24 hours) to the new address and `EMAIL_CHANGED` (notice, no link) to the previous one.
+- Web: the "Your account" page (details, reminder emails, login email, password) and the public "Confirm your new email" page.
+
+### Acceptance criteria
+
+- [x] Given a member, then name, phone and the two reminder toggles can be changed; both toggles start on; any other field (such as an overdue toggle) is rejected naming the field.
+- [x] Given a wrong current password, then a password or email change is refused with a field error, and it counts towards the login lockout (429 after 5).
+- [x] Given a password change, then this session continues under a new ID, every other session ends, and older reset links stop working.
+- [x] Given an email change, then the account keeps its address until the 24-hour link sent to the new address is used; the link is single use and a newer request replaces it; the previous address gets a notice.
+- [x] Given a new address that already has an account, then the response is the same and no link is sent; if it gains one before confirmation, the link fails and nothing changes, also when two accounts confirm at once.
+- [x] Logs about profiles carry IDs only; the pages have no axe violations.
+
 ## Out of scope
 
-- FR-ID-06 profile, password, email and reminder preferences: part 2.
+- Using the reminder toggles: the scheduled reminder jobs (T-050) read them.
+- Password and email change for staff accounts (T-014 or later).
 - Choosing a child on a reservation (T-040).
 
 ## Definition of Done

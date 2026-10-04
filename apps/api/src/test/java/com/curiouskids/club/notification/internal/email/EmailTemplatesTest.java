@@ -22,23 +22,27 @@ class EmailTemplatesTest {
   @EnumSource(EmailType.class)
   @DisplayName("FR-NOT-01: every email type renders a mobile-friendly HTML body and a text body")
   void everyTypeRendersBothParts(EmailType type) {
-    RenderedEmail email = templates.render(type, "a@example.com", Map.of("path", "/go?t=1"));
+    boolean hasLink = type.payloadKeys().contains("path");
+    RenderedEmail email =
+        templates.render(type, "a@example.com", hasLink ? Map.of("path", "/go?t=1") : Map.of());
 
     assertThat(email.to()).isEqualTo("a@example.com");
     assertThat(email.subject()).isNotBlank();
     assertThat(email.html())
         .contains("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
         .contains("max-width:560px")
-        .contains("href=\"https://club.example/go?t=1\"")
         .contains("<title>" + email.subject().replace("'", "&#39;") + "</title>")
         .doesNotContain(" th:")
         .doesNotContain("xmlns:th")
         .doesNotContain("${");
     assertThat(email.text())
         .startsWith("Curiouskids Club")
-        .contains("https://club.example/go?t=1")
         .doesNotContain("${")
         .doesNotContain("<");
+    if (hasLink) {
+      assertThat(email.html()).contains("href=\"https://club.example/go?t=1\"");
+      assertThat(email.text()).contains("https://club.example/go?t=1");
+    }
   }
 
   @Test

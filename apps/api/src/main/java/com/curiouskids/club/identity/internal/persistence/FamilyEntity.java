@@ -40,6 +40,13 @@ public class FamilyEntity {
     this.updatedAt = now;
   }
 
+  /** The parent's name and optional phone, as they gave them (FR-ID-06). */
+  public void changeContact(String displayName, String phone, Instant now) {
+    this.displayName = displayName;
+    this.phone = phone;
+    updatedAt = now;
+  }
+
   public UUID getId() {
     return id;
   }
