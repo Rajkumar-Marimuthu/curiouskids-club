@@ -34,6 +34,7 @@
 - Password hashing: Argon2id (Spring Security `Argon2PasswordEncoder`) or bcrypt with cost 12 or more, behind the delegating encoder so it can be upgraded. Minimum length 12, no composition rules, reject common and previously breached passwords.
 - Sessions: members 14 days sliding; staff 30 minutes idle and 8 hours absolute. Logout and password change revoke sessions.
 - Tokens (email verification 24 hours, password reset 1 hour, staff invitation 7 days): random 256-bit, stored hashed, single use.
+- Request limits (429 `RATE_LIMITED` with `Retry-After`), counted in the database over a sliding hour by hashed email and hashed IP: registration 10 per IP; reset and verification emails together 3 per email address and 20 per IP. Login has its own lockout (FR-ID-03).
 - MFA (TOTP) required for VOLUNTEER and ADMIN before public launch (T-060). Recovery codes generated at enrolment.
 
 ## Authorization

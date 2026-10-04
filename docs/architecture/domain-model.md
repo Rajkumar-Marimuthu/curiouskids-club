@@ -41,6 +41,7 @@ All tables also have `id` (UUID), `created_at`, `updated_at`; user-editable aggr
 | `audit_log` | `actor_account_id`, `action`, `entity_type`, `entity_id`, `details` (jsonb), `at` | No personal data in `details` |
 | `setting` | `key` (unique), `value`, `updated_by` | Business rule settings |
 | `login_failure` | `email_hash`, `ip_hash` (SHA-256, never the raw values), `at` | Failed logins for the 15-minute lockout (FR-ID-03); a success clears the email's rows; rows older than a day are purged daily |
+| `request_throttle` | `action` (REGISTER, EMAIL_LINK), `key_hash` (SHA-256 of an email or IP, prefixed by kind), `at` | One row per throttled request for the hourly limits (FR-ID-04); rows older than a day are purged daily |
 | `spring_session`, `spring_session_attributes` | Spring Session JDBC standard tables | Server-side sessions (ADR-0004); `principal_name` holds the account ID, never the email |
 | `shedlock` | ShedLock standard table | Job locks |
 

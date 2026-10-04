@@ -23,6 +23,8 @@ Each requirement has a stable ID, a statement, the business rules it relies on, 
 **FR-ID-04 (M) Reset password.**
 - Given a registered email, when a reset is requested, then an email with a one-hour single-use token is queued; the response is identical for unknown emails.
 - Given a valid token and a strong new password, then the password changes and all existing sessions are revoked.
+- Given a reset completed from the emailed link, then the email address also counts as verified (the link proves ownership).
+- Given more than 3 reset or verification emails requested for one email address within an hour, or more than 20 such requests from one IP, then further requests get 429 `RATE_LIMITED`; known and unknown emails are limited the same way.
 
 **FR-ID-05 (M) Manage child profiles.** Rules: BR-15, BR-30.
 - Given a logged-in member, when adding a child with first name and age band, then it is saved under the family.
