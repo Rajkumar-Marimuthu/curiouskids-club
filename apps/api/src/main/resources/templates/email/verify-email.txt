@@ -1,0 +1,13 @@
+Curiouskids Club
+
+Please confirm your email
+
+Thanks for joining Curiouskids Club! Use the link below to confirm your email address, and then you can start borrowing books.
+
+Confirm my email: [(${link})]
+
+The link works for 24 hours.
+
+--
+This email is from Curiouskids Club, our neighbourhood lending library.
+If you were not expecting it, you can ignore it.

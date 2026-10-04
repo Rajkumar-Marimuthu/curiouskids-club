@@ -10,9 +10,18 @@ spring:
   mvc:
     problemdetails:
       enabled: false # GlobalExceptionHandler renders problem+json itself
+  mail: # SMTP transport; local and test use Mailpit, AWS uses SES (club.notification.transport)
+    host: localhost
+    port: 1025
 
 club:
   timezone: Europe/London
+  jobs:
+    enabled: true # scheduled jobs; tests turn them off and run jobs directly
+  notification:
+    from: ${MAIL_FROM:Curiouskids Club <noreply@curiouskids.example>}
+    app-base-url: ${APP_BASE_URL:http://localhost:5173}
+    transport: smtp
 
 logging:
   structured:

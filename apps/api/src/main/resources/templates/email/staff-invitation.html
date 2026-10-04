@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{email/layout :: layout(~{::#heading}, ~{::#content})}">
+<body>
+<h1 id="heading" style="margin:0 0 16px;font-size:22px;">You're invited to help!</h1>
+<div id="content">
+  <p style="margin:0 0 16px;">You have been invited to help run Curiouskids Club. Press the button to create your account.</p>
+  <p style="margin:0 0 24px;"><a th:href="${link}" style="display:inline-block;padding:12px 24px;background:#6d28d9;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:bold;">Create my account</a></p>
+  <p style="margin:0 0 16px;">The link works for 7 days.</p>
+  <p style="margin:0;font-size:14px;color:#4b5563;">If the button does not work, copy this link into your browser:<br>
+    <span th:text="${link}" style="word-break:break-all;">link</span></p>
+</div>
+</body>
+</html>
