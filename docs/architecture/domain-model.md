@@ -40,6 +40,8 @@ All tables also have `id` (UUID), `created_at`, `updated_at`; user-editable aggr
 | `notification_outbox` | `type`, `recipient_account_id` (nullable), `recipient_email`, `payload` (jsonb), `dedupe_key` (unique), `status` (PENDING, SENT, FAILED), `attempts`, `next_attempt_at`, `sent_at`, `last_error` | Written in the business transaction. `recipient_email` is stored because invitations go to people with no account yet; it and `payload` are cleared 30 days after sending |
 | `audit_log` | `actor_account_id`, `action`, `entity_type`, `entity_id`, `details` (jsonb), `at` | No personal data in `details` |
 | `setting` | `key` (unique), `value`, `updated_by` | Business rule settings |
+| `login_failure` | `email_hash`, `ip_hash` (SHA-256, never the raw values), `at` | Failed logins for the 15-minute lockout (FR-ID-03); a success clears the email's rows; rows older than a day are purged daily |
+| `spring_session`, `spring_session_attributes` | Spring Session JDBC standard tables | Server-side sessions (ADR-0004); `principal_name` holds the account ID, never the email |
 | `shedlock` | ShedLock standard table | Job locks |
 
 ## Database-enforced invariants
