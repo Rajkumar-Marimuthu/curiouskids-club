@@ -37,7 +37,7 @@ All tables also have `id` (UUID), `created_at`, `updated_at`; user-editable aggr
 | `slot_occurrence` | `window_id`, `date`, `start_at`, `end_at` (UTC), `capacity`, `booked_count` | Unique on (`window_id`, `date`); generated for the booking horizon |
 | `reservation` | `family_id`, `title_id`, `copy_id` (null while WAITLISTED), `pickup_slot_id` (null unless READY_FOR_PICKUP), `status`, `requested_at`, `promoted_at`, `choose_slot_by`, `idempotency_key`, `created_by` | Statuses below |
 | `loan` | `reservation_id`, `copy_id`, `title_id`, `family_id`, `checked_out_at`, `due_date`, `returned_at`, `renewals`, `status` (ON_LOAN, RETURNED, LOST), `checked_out_by`, `checked_in_by` | `title_id` is denormalised to enforce one loan per family per title |
-| `notification_outbox` | `type`, `recipient_account_id`, `payload` (jsonb), `dedupe_key` (unique), `status`, `attempts`, `next_attempt_at`, `sent_at` | Written in the business transaction |
+| `notification_outbox` | `type`, `recipient_account_id` (nullable), `recipient_email`, `payload` (jsonb), `dedupe_key` (unique), `status` (PENDING, SENT, FAILED), `attempts`, `next_attempt_at`, `sent_at`, `last_error` | Written in the business transaction. `recipient_email` is stored because invitations go to people with no account yet; it and `payload` are cleared 30 days after sending |
 | `audit_log` | `actor_account_id`, `action`, `entity_type`, `entity_id`, `details` (jsonb), `at` | No personal data in `details` |
 | `setting` | `key` (unique), `value`, `updated_by` | Business rule settings |
 | `shedlock` | ShedLock standard table | Job locks |

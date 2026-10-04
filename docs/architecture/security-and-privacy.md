@@ -69,6 +69,7 @@ Data inventory:
 | Consent version and timestamp | Parent | Proof of consent | With account |
 | Child first name or nickname, age band | Child | Suggest suitable books | With family; deleted with account |
 | Loan and reservation history | Family | Operate the library, overdue follow-up | Anonymised on account deletion |
+| Outbox email address and template values | Recipient | Send transactional emails | Cleared 30 days after sending; FAILED rows kept for admin review |
 | Audit log (IDs only) | Staff and family IDs | Accountability | 2 years |
 | Application logs (no personal data) | Requests | Operations | 30 days |
 
