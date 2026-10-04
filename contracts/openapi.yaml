@@ -124,6 +124,26 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+  /api/v1/auth/email-change/confirm:
+    post:
+      tags:
+        - auth
+      operationId: confirmEmailChange
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailChangeConfirmRequest'
+        required: true
+      responses:
+        '204':
+          description: The account now uses the new address; the previous address is told
+        '400':
+          description: TOKEN_INVALID (also when the address now has another account) or VALIDATION_FAILED
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
   /api/v1/auth/login:
     post:
       tags:
@@ -284,6 +304,93 @@ paths:
                 $ref: '#/components/schemas/Problem'
         '404':
           description: 'NOT_FOUND: no such child in your family'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/me/profile:
+    get:
+      tags:
+        - account
+      operationId: getProfile
+      responses:
+        '200':
+          description: Your details and reminder preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+    patch:
+      tags:
+        - account
+      operationId: updateProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Profile changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '400':
+          description: VALIDATION_FAILED with field errors, including any field other than these
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/me/password:
+    post:
+      tags:
+        - account
+      operationId: changePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChangeRequest'
+        required: true
+      responses:
+        '204':
+          description: Password changed; your other sessions have ended
+        '400':
+          description: 'VALIDATION_FAILED: current password wrong or new one too weak'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: 'RATE_LIMITED: too many wrong passwords; see Retry-After'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/me/email:
+    post:
+      tags:
+        - account
+      operationId: requestEmailChange
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailChangeRequest'
+        required: true
+      responses:
+        '202':
+          description: Accepted; a confirmation link is on its way to the new address
+        '400':
+          description: 'VALIDATION_FAILED: current password wrong, or the address is not new'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: 'RATE_LIMITED: too many wrong passwords or emailed links; see Retry-After'
           content:
             application/problem+json:
               schema:
@@ -529,6 +636,86 @@ components:
         - ageBand
         - firstName
         - id
+    ProfileResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+          description: Absent if none was given
+        email:
+          type: string
+        pendingEmail:
+          type: string
+          description: A new address waiting for its confirmation link to be used
+        remindPickup:
+          type: boolean
+          description: Pickup reminders (BR-32) are sent
+        remindDueSoon:
+          type: boolean
+          description: Due-soon and due-today reminders (BR-33) are sent
+      required:
+        - email
+        - name
+        - remindDueSoon
+        - remindPickup
+    ProfileUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          pattern: .*\S.*
+        phone:
+          type: string
+          maxLength: 30
+          minLength: 0
+          pattern: ^[0-9+()\- ]*$
+        remindPickup:
+          type: boolean
+        remindDueSoon:
+          type: boolean
+    PasswordChangeRequest:
+      type: object
+      properties:
+        currentPassword:
+          type: string
+          maxLength: 128
+          minLength: 1
+        newPassword:
+          type: string
+          maxLength: 128
+          minLength: 12
+      required:
+        - currentPassword
+        - newPassword
+    EmailChangeRequest:
+      type: object
+      properties:
+        newEmail:
+          type: string
+          format: email
+          maxLength: 254
+          minLength: 1
+        currentPassword:
+          type: string
+          maxLength: 128
+          minLength: 1
+      required:
+        - currentPassword
+        - newEmail
+    EmailChangeConfirmRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          maxLength: 100
+          minLength: 1
+      required:
+        - token
     PingResponse:
       type: object
       properties:
